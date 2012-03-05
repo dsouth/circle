@@ -3,14 +3,19 @@
  '(javax.swing JFrame JPanel)
  '(java.awt.event KeyEvent  KeyListener))
 
+(def buffer (ref []))
+
+(defn add-char [c]
+  (dosync
+   (alter buffer conj c))
+  (println (apply str @buffer)))
+
 (def keylistener
   (proxy [KeyListener] []
     (keyTyped [event]
-      (println "keyTyped " (.getKeyChar event)))
-    (keyPressed [event]
-      println "keyPressed " (.getKeyChar event))
-    (keyReleased [event]
-      println "keyReleased " (.getKeyChar event))))
+      (add-char (.getKeyChar event)))
+    (keyPressed [event])
+    (keyReleased [event])))
 
 (def panel (JPanel.))
 (.addKeyListener panel keylistener)
