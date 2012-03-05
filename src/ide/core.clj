@@ -5,17 +5,25 @@
 
 (def buffer (ref []))
 
-(defn add-char [c]
-  (dosync
-   (alter buffer conj c))
+(defn key-typed [event]
+  (let [c (.getKeyChar event)]
+    (dosync
+     (alter buffer conj c)))
   (println (apply str @buffer)))
+
+(defn key-pressed [event]
+  (println "key pressed " event))
+
+(defn key-released [event])
 
 (def keylistener
   (proxy [KeyListener] []
     (keyTyped [event]
-      (add-char (.getKeyChar event)))
-    (keyPressed [event])
-    (keyReleased [event])))
+      (key-typed event))
+    (keyPressed [event]
+      (key-pressed event))
+    (keyReleased [event]
+      (key-released event))))
 
 (def panel (JPanel.))
 (.addKeyListener panel keylistener)
