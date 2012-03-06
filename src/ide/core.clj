@@ -1,12 +1,12 @@
 (ns ide.core)
 (import
- '(javax.swing JFrame JPanel)
- '(java.awt.event KeyEvent  KeyListener))
+ '(javax.swing JFrame JComponent)
+ '(java.awt Color RenderingHints)
+ '(java.awt.event KeyEvent KeyListener))
 
 (def buffer (ref []))
 
 (defn delete []
-  (println "deleteing ...")
   (let [end (- (count @buffer) 1)]
     (dosync
      (alter buffer subvec 0 end))))
@@ -17,13 +17,15 @@
       (dosync
        (alter buffer conj c)))))
 
-(defn key-typed [event])
+(declare editor)
+
+(defn key-typed [event]
+  (.repaint editor))
 
 (defn key-pressed [event]
   (if (= KeyEvent/VK_BACK_SPACE (.getKeyCode event))
     (delete)
-    (add-char event))
-  (println (apply str @buffer)))
+    (add-char event)))
 
 (defn key-released [event])
 
@@ -36,7 +38,22 @@
     (keyReleased [event]
       (key-released event))))
 
-(def panel (JPanel.))
+(defn editor-paint [g]
+  (.setColor g Color/BLACK)
+  (.drawString g (apply str @buffer) 100 100))
+
+(defn editor-update [g]
+  (println "update")
+  (.setColor g Color/WHITE))
+
+(def editor
+  (proxy [JComponent] []
+    (paint [g]
+      (editor-paint g))
+    (update [g]
+      (editor-update g))))
+
+(def panel editor)
 (.addKeyListener panel keylistener)
 
 (def frame (JFrame.))
