@@ -13,8 +13,9 @@
 
 (defn add-char [event]
   (let [c (.getKeyChar event)]
-    (dosync
-     (alter buffer conj c))))
+    (if (Character/isDefined c)
+      (dosync
+       (alter buffer conj c)))))
 
 (defn key-typed [event])
 
