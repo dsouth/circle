@@ -1,7 +1,7 @@
 (ns ide.core)
 (import
  '(javax.swing JFrame JComponent)
- '(java.awt Color RenderingHints)
+ '(java.awt Color Font RenderingHints)
  '(java.awt.event KeyEvent KeyListener))
 
 (def buffer (ref []))
@@ -52,6 +52,10 @@
       (editor-paint g))
     (update [g]
       (editor-update g))))
+
+(def font (Font. "Menlo" Font/PLAIN 24))
+
+(.setFont editor font)
 
 (def panel editor)
 (.addKeyListener panel keylistener)
