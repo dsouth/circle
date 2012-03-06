@@ -38,9 +38,14 @@
     (keyReleased [event]
       (key-released event))))
 
+(declare font)
+
 (defn editor-paint [g]
-  (.setColor g Color/BLACK)
-  (.drawString g (apply str @buffer) 100 100))
+  (let [frc (.getFontRenderContext g)
+        s (apply str @buffer)
+        bounds (.getStringBounds font s frc)
+        y (int (Math/ceil (.getHeight bounds)))]
+    (.drawString g s 0 y)))
 
 (defn editor-update [g]
   (println "update")
