@@ -1,13 +1,19 @@
-# ide
-
-FIXME: write description
-
-## Usage
-
-FIXME: write
-
 ## License
 
-Copyright (C) 2012 FIXME
+Copyright (C) 2012 Douglas South
 
-Distributed under the Eclipse Public License, the same as Clojure.
+TODO:
+
+Multiple lines
+
+Cursor movement with proper editing
+
+Selection (cut, copy, paste, deletion...)
+
+Formatting and highlighting (possibly pretty-lispy stuff too?)
+
+> 1 buffer support
+
+blinking cursor, better cursor
+
+Don't forget the REPL

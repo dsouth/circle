@@ -12,7 +12,7 @@
 (defn key-pressed [event]
   (if (= KeyEvent/VK_BACK_SPACE (.getKeyCode event))
     (edit/delete)
-    (edit/add-char event)))
+    (edit/add-char (.getKeyChar event))))
 
 (defn key-released [event])
 
@@ -27,29 +27,31 @@
 
 (declare font)
 
+(defn get-cursor-x [frc s]
+  (if (= 0 (count s))
+    0
+    (let [glyph-vector (.createGlyphVector font frc s)
+          cursor-index (edit/get-horizontal-cursor-position)
+          bounding-shape (.getGlyphLogicalBounds glyph-vector cursor-index)
+          bounding-rect (.getBounds bounding-shape)]
+      (int (+ (.getX bounding-rect) (.getWidth bounding-rect))))))
+
 (defn editor-paint [g]
   (let [frc (.getFontRenderContext g)
-        s (edit/get-line)
+        s (edit/get-line 0)
         bounds (.getStringBounds font s frc)
         y (int (Math/ceil (.getHeight bounds)))
-        glyph-vector (.createGlyphVector font frc s)
-        cursor-index (- (edit/get-horizontal-cursor-position) 1)
-        bounding-shape (.getGlyphLogicalBounds glyph-vector cursor-index)
-        bounding-rect (.getBounds bounding-shape)
-        cursor-x (int (+ (.getWidth bounding-rect) (.getX bounding-rect)))]
+        cursor-x (get-cursor-x frc s)]
+    (println s)
     (.drawString g s 0 y)
+    (println "drew cursor at " cursor-x)
     (.drawLine g cursor-x 0 cursor-x y)))
 
-(defn editor-update [g]
-  (println "update")
-  (.setColor g Color/WHITE))
 
 (def editor
   (proxy [JComponent] []
     (paint [g]
-      (editor-paint g))
-    (update [g]
-      (editor-update g))))
+      (editor-paint g))))
 
 (def font (Font. "Menlo" Font/PLAIN 24))
 
