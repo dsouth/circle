@@ -5,16 +5,24 @@
 
 (def buffer (ref []))
 
-(defn key-typed [event]
+(defn delete []
+  (println "deleteing ...")
+  (let [end (- (count @buffer) 1)]
+    (dosync
+     (alter buffer subvec 0 end))))
+
+(defn add-char [event]
   (let [c (.getKeyChar event)]
-    (dosync (alter buffer conj c)))
-  (println @buffer))
+    (dosync
+     (alter buffer conj c))))
+
+(defn key-typed [event])
 
 (defn key-pressed [event]
   (if (= KeyEvent/VK_BACK_SPACE (.getKeyCode event))
-    (do
-      (println "back space" (butlast @buffer))
-      (dosync (alter buffer subvec 0 (- (count buffer) 1))))))
+    (delete)
+    (add-char event))
+  (println (apply str @buffer)))
 
 (defn key-released [event])
 
@@ -34,7 +42,7 @@
 (.setDefaultCloseOperation frame JFrame/DISPOSE_ON_CLOSE)
 (.add frame panel)
 (.pack frame)
-(.requestFocus panel) ;; perhaps on an expose listener?
+(.requestFocus panel) ;; perhaps on an expose listener? Or a focus manager???
 
 (defn show []
   (.setVisible frame true))
