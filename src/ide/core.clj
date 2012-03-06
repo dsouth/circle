@@ -15,7 +15,8 @@
         line-number (@cursor 0)
         altered (subvec (@buffer line-number) 0 end)]
     (dosync
-     (alter buffer assoc line-number altered))))
+     (alter buffer assoc line-number altered)
+     (alter cursor assoc 1 (- (@cursor 1) 1)))))
 
 (defn add-char [event]
   (let [c (.getKeyChar event)
@@ -23,7 +24,8 @@
         altered (conj (@buffer line-number) c)]
     (if (Character/isDefined c)
       (dosync
-       (alter buffer assoc line-number altered)))))
+       (alter buffer assoc line-number altered)
+       (alter cursor assoc 1 (+ (@cursor 1) 1))))))
 
 (declare editor)
 
@@ -52,8 +54,14 @@
   (let [frc (.getFontRenderContext g)
         s (apply str (@buffer (@cursor 0)))
         bounds (.getStringBounds font s frc)
-        y (int (Math/ceil (.getHeight bounds)))]
-    (.drawString g s 0 y)))
+        y (int (Math/ceil (.getHeight bounds)))
+        glyph-vector (.createGlyphVector font frc s)
+        cursor-index (- (@cursor 1) 1)
+        bounding-shape (.getGlyphLogicalBounds glyph-vector cursor-index)
+        bounding-rect (.getBounds bounding-shape)
+        cursor-x (int (+ (.getWidth bounding-rect) (.getX bounding-rect)))]
+    (.drawString g s 0 y)
+    (.drawLine g cursor-x 0 cursor-x y)))
 
 (defn editor-update [g]
   (println "update")
