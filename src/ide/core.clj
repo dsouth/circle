@@ -4,18 +4,26 @@
  '(java.awt Color Font RenderingHints)
  '(java.awt.event KeyEvent KeyListener))
 
-(def buffer (ref []))
+;; cursor is line number and character on line
+;; e.g. [0 1] is after the first character on the first line
+(def cursor (ref [0 0]))
+;; buffer is a vector of line vectors
+(def buffer (ref [[]]))
 
 (defn delete []
-  (let [end (- (count @buffer) 1)]
+  (let [end (- (count (@buffer (@cursor 0))) 1)
+        line-number (@cursor 0)
+        altered (subvec (@buffer line-number) 0 end)]
     (dosync
-     (alter buffer subvec 0 end))))
+     (alter buffer assoc line-number altered))))
 
 (defn add-char [event]
-  (let [c (.getKeyChar event)]
+  (let [c (.getKeyChar event)
+        line-number (@cursor 0)
+        altered (conj (@buffer line-number) c)]
     (if (Character/isDefined c)
       (dosync
-       (alter buffer conj c)))))
+       (alter buffer assoc line-number altered)))))
 
 (declare editor)
 
@@ -42,7 +50,7 @@
 
 (defn editor-paint [g]
   (let [frc (.getFontRenderContext g)
-        s (apply str @buffer)
+        s (apply str (@buffer (@cursor 0)))
         bounds (.getStringBounds font s frc)
         y (int (Math/ceil (.getHeight bounds)))]
     (.drawString g s 0 y)))
