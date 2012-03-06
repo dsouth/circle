@@ -1,31 +1,8 @@
-(ns ide.core)
-(import
- '(javax.swing JFrame JComponent)
- '(java.awt Color Font RenderingHints)
- '(java.awt.event KeyEvent KeyListener))
-
-;; cursor is line number and character on line
-;; e.g. [0 1] is after the first character on the first line
-(def cursor (ref [0 0]))
-;; buffer is a vector of line vectors
-(def buffer (ref [[]]))
-
-(defn delete []
-  (let [end (- (count (@buffer (@cursor 0))) 1)
-        line-number (@cursor 0)
-        altered (subvec (@buffer line-number) 0 end)]
-    (dosync
-     (alter buffer assoc line-number altered)
-     (alter cursor assoc 1 (- (@cursor 1) 1)))))
-
-(defn add-char [event]
-  (let [c (.getKeyChar event)
-        line-number (@cursor 0)
-        altered (conj (@buffer line-number) c)]
-    (if (Character/isDefined c)
-      (dosync
-       (alter buffer assoc line-number altered)
-       (alter cursor assoc 1 (+ (@cursor 1) 1))))))
+(ns ide.core
+  (:require [ide.edit :as edit])
+  (:import (javax.swing JFrame JComponent)
+           (java.awt Color Font RenderingHints)
+           (java.awt.event KeyEvent KeyListener)))
 
 (declare editor)
 
@@ -34,8 +11,8 @@
 
 (defn key-pressed [event]
   (if (= KeyEvent/VK_BACK_SPACE (.getKeyCode event))
-    (delete)
-    (add-char event)))
+    (edit/delete)
+    (edit/add-char event)))
 
 (defn key-released [event])
 
@@ -52,11 +29,11 @@
 
 (defn editor-paint [g]
   (let [frc (.getFontRenderContext g)
-        s (apply str (@buffer (@cursor 0)))
+        s (edit/get-line)
         bounds (.getStringBounds font s frc)
         y (int (Math/ceil (.getHeight bounds)))
         glyph-vector (.createGlyphVector font frc s)
-        cursor-index (- (@cursor 1) 1)
+        cursor-index (- (edit/get-horizontal-cursor-position) 1)
         bounding-shape (.getGlyphLogicalBounds glyph-vector cursor-index)
         bounding-rect (.getBounds bounding-shape)
         cursor-x (int (+ (.getWidth bounding-rect) (.getX bounding-rect)))]
