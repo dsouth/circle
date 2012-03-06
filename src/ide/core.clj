@@ -7,12 +7,14 @@
 
 (defn key-typed [event]
   (let [c (.getKeyChar event)]
-    (dosync
-     (alter buffer conj c)))
-  (println (apply str @buffer)))
+    (dosync (alter buffer conj c)))
+  (println @buffer))
 
 (defn key-pressed [event]
-  (println "key pressed " event))
+  (if (= KeyEvent/VK_BACK_SPACE (.getKeyCode event))
+    (do
+      (println "back space" (butlast @buffer))
+      (dosync (alter buffer subvec 0 (- (count buffer) 1))))))
 
 (defn key-released [event])
 
@@ -34,4 +36,5 @@
 (.pack frame)
 (.requestFocus panel) ;; perhaps on an expose listener?
 
-;;; (.setVisible frame true)
+(defn show []
+  (.setVisible frame true))
