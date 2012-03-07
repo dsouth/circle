@@ -25,9 +25,7 @@
     (keyReleased [event]
       (key-released event))))
 
-(declare font)
-
-(defn get-cursor-x [frc s]
+(defn get-cursor-x [font frc s]
   (if (= 0 (count s))
     0
     (let [glyph-vector (.createGlyphVector font frc s)
@@ -37,17 +35,20 @@
       (int (+ (.getX bounding-rect) (.getWidth bounding-rect))))))
 
 (defn editor-paint [g]
-  (let [frc (.getFontRenderContext g)
+  (let [font-metrics (.getFontMetrics g)
+        frc (.getFontRenderContext g)
         s (edit/get-line 0)
+        font (.getFont g)
         bounds (.getStringBounds font s frc)
         line-height (int (Math/ceil (.getHeight bounds)))]
-    (let [n (edit/line-count)]
+    (let [n (edit/line-count)
+          descent (.getDescent font-metrics)]
       (dotimes [i n]
-        (.drawString g (edit/get-line i) 0 (* (+ 1 i) line-height))))
+        (.drawString g (edit/get-line i) 0 (- (* (+ 1 i) line-height) descent))))
     (let [i (edit/cursor-line)
           top (* i line-height)
           bottom (+ top line-height)
-          cursor-x (get-cursor-x frc (edit/get-line i))]
+          cursor-x (get-cursor-x font frc (edit/get-line i))]
       (.drawLine g cursor-x top cursor-x bottom))))
 
 (def editor
@@ -55,9 +56,7 @@
     (paint [g]
       (editor-paint g))))
 
-(def font (Font. "Menlo" Font/PLAIN 24))
-
-(.setFont editor font)
+(.setFont editor (Font. "Menlo" Font/PLAIN 24))
 
 (def panel editor)
 (.addKeyListener panel keylistener)
