@@ -34,6 +34,11 @@
           bounding-rect (.getBounds bounding-shape)]
       (int (+ (.getX bounding-rect) (.getWidth bounding-rect))))))
 
+(defn baseline [i line-height descent]
+  (- (* (+ 1 i)
+        line-height)
+     descent))
+
 (defn editor-paint [g]
   (let [font-metrics (.getFontMetrics g)
         frc (.getFontRenderContext g)
@@ -44,7 +49,7 @@
     (let [n (edit/line-count)
           descent (.getDescent font-metrics)]
       (dotimes [i n]
-        (.drawString g (edit/get-line i) 0 (- (* (+ 1 i) line-height) descent))))
+        (.drawString g (edit/get-line i) 0 (baseline i line-height descent))))
     (let [i (edit/get-cursor-line)
           top (* i line-height)
           bottom (+ top line-height)

@@ -14,11 +14,6 @@
 (defn get-cursor-line []
   @cursor-line)
 
-(defn end-of-line [x line]
-  (let [end (= (count (@buffer line)) x)]
-    (println "end of line is " end)
-    end))
-
 (defn get-horizontal-cursor-position []
   (let [x @cursor-x
         line @cursor-line]
