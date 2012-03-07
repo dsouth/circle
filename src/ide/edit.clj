@@ -15,8 +15,7 @@
   @cursor-line)
 
 (defn get-horizontal-cursor-position []
-  (let [x @cursor-x
-        line @cursor-line]
+  (let [x @cursor-x]
     (if (> x 0)
       (- x 1)
       x)))
