@@ -49,9 +49,9 @@
           altered (conj (@buffer line-number) c)]
       (dosync
        (alter buffer assoc line-number altered)
-       (alter cursor-x #(+ 1 %))))
+       (alter cursor-x #(inc %))))
     (if (= c \newline)
       (dosync
-       (alter buffer assoc (+ 1 @cursor-line) [])
-       (alter cursor-line #(+ 1 %))
+       (alter buffer assoc (inc @cursor-line) [])
+       (alter cursor-line #(inc %))
        (alter cursor-x #(* % 0))))))
