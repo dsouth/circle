@@ -40,13 +40,12 @@
   (let [frc (.getFontRenderContext g)
         s (edit/get-line 0)
         bounds (.getStringBounds font s frc)
-        y (int (Math/ceil (.getHeight bounds)))
+        line-height (int (Math/ceil (.getHeight bounds)))
         cursor-x (get-cursor-x frc s)]
-    (println s)
-    (.drawString g s 0 y)
-    (println "drew cursor at " cursor-x)
-    (.drawLine g cursor-x 0 cursor-x y)))
-
+    (let [n (edit/line-count)]
+      (dotimes [i n]
+        (.drawString g (edit/get-line i) 0 (* (+ 1 i) line-height))))
+    (.drawLine g cursor-x 0 cursor-x line-height)))
 
 (def editor
   (proxy [JComponent] []
