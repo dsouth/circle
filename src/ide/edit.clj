@@ -1,45 +1,9 @@
 (ns ide.edit)
 
-;; cursor is line number and character on line
-;; e.g. [0 1] is after the first character on the first line
-(def cursor (ref [0 0]))
+(def cursor-line (ref 0))
+(def cursor-x (ref 0))
 ;; buffer is a vector of line vectors
 (def buffer (ref [[]]))
-
-(declare get-line)
-
-(defn delete []
-  (let [line-number (@cursor 0)]
-    (if (= [] (@buffer line-number))
-      (if (> (count @buffer) 1)
-        (let [new-size (- (count @buffer) 1)
-              line-length (count (get-line (- (@cursor 0) 1)))]
-          (dosync
-           (alter buffer subvec 0 new-size)
-           (alter cursor assoc 0 (- (@cursor 0) 1))
-           (alter cursor assoc 1 line-length))))
-      (let [end (- (count (@buffer (@cursor 0))) 1)
-            altered (subvec (@buffer line-number) 0 end)]
-        (dosync
-         (alter buffer assoc line-number altered)
-         (alter cursor assoc 1 (- (@cursor 1) 1)))))))
-
-(defn can-add-char? [c]
-  (and (Character/isDefined c)
-       (not= c \newline)))
-
-(defn add-char [c]
-  (if (can-add-char? c)
-    (let [line-number (@cursor 0)
-          altered (conj (@buffer line-number) c)]
-      (dosync
-       (alter buffer assoc line-number altered)
-       (alter cursor assoc 1 (+ (@cursor 1) 1))))
-    (if (= c \newline)
-      (dosync
-       (alter buffer assoc (+ 1 (@cursor 0)) [])
-       (alter cursor assoc 0 (+ (@cursor 0) 1))
-       (alter cursor assoc 1 0)))))
 
 (defn line-count []
   (count @buffer))
@@ -47,8 +11,8 @@
 (defn get-line [i]
   (apply str (@buffer i)))
 
-(defn cursor-line []
-  (@cursor 0))
+(defn get-cursor-line []
+  @cursor-line)
 
 (defn end-of-line [x line]
   (let [end (= (count (@buffer line)) x)]
@@ -56,14 +20,44 @@
     end))
 
 (defn get-horizontal-cursor-position []
-  (let [x (@cursor 1)
-        line (@cursor 0)]
+  (let [x @cursor-x
+        line @cursor-line]
     (if (> x 0)
       (- x 1)
       x)))
 
-;; for debugging
-(defn reset []
-  (dosync (alter cursor assoc 0 0)
-          (alter cursor assoc 1 0)
-          (alter buffer vector [])))
+(defn dummy [_ line-length]
+  line-length)
+
+(defn delete []
+  (let [line-number @cursor-line]
+    (if (= [] (@buffer line-number))
+      (if (> (count @buffer) 1)
+        (let [new-size (- (count @buffer) 1)
+              line-length (count (get-line (- @cursor-line 1)))]
+          (dosync
+           (alter buffer subvec 0 new-size)
+           (alter cursor-line #(- % 1))
+           (alter cursor-x dummy line-length))))
+      (let [end (- (count (@buffer @cursor-line)) 1)
+            altered (subvec (@buffer line-number) 0 end)]
+        (dosync
+         (alter buffer assoc line-number altered)
+         (alter cursor-x #(- % 1)))))))
+
+(defn can-add-char? [c]
+  (and (Character/isDefined c)
+       (not= c \newline)))
+
+(defn add-char [c]
+  (if (can-add-char? c)
+    (let [line-number @cursor-line
+          altered (conj (@buffer line-number) c)]
+      (dosync
+       (alter buffer assoc line-number altered)
+       (alter cursor-x #(+ 1 %))))
+    (if (= c \newline)
+      (dosync
+       (alter buffer assoc (+ 1 @cursor-line) [])
+       (alter cursor-line #(+ 1 %))
+       (alter cursor-x #(* % 0))))))

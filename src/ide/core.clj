@@ -45,7 +45,7 @@
           descent (.getDescent font-metrics)]
       (dotimes [i n]
         (.drawString g (edit/get-line i) 0 (- (* (+ 1 i) line-height) descent))))
-    (let [i (edit/cursor-line)
+    (let [i (edit/get-cursor-line)
           top (* i line-height)
           bottom (+ top line-height)
           cursor-x (get-cursor-x font frc (edit/get-line i))]
