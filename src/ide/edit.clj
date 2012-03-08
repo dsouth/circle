@@ -43,15 +43,19 @@
   (and (Character/isDefined c)
        (not= c \newline)))
 
+(defn add-char-end-of-line [line-number new-line-text]
+  (dosync
+   (alter buffer assoc line-number new-line-text)
+   (alter cursor-x #(inc %))))
+
+(defn add-newline-end-of-line []
+  (dosync
+   (alter buffer assoc (inc @cursor-line) [])
+   (alter cursor-line #(inc %))
+   (alter cursor-x #(* % 0))))
+
 (defn add-char [c]
   (if (can-add-char? c)
-    (let [line-number @cursor-line
-          altered (conj (@buffer line-number) c)]
-      (dosync
-       (alter buffer assoc line-number altered)
-       (alter cursor-x #(inc %))))
+    (add-char-end-of-line @cursor-line (conj (@buffer @cursor-line) c))
     (if (= c \newline)
-      (dosync
-       (alter buffer assoc (inc @cursor-line) [])
-       (alter cursor-line #(inc %))
-       (alter cursor-x #(* % 0))))))
+      (add-newline-end-of-line))))
