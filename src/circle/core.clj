@@ -1,4 +1,4 @@
-(ns ide.core
+(ns circle.core
   (:require [ide.edit :as edit])
   (:import (javax.swing JFrame JComponent)
            (java.awt Color Font RenderingHints)

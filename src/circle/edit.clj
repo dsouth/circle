@@ -1,4 +1,4 @@
-(ns ide.edit)
+(ns circle.edit)
 
 (def cursor-line (ref 0))
 (def cursor-x (ref 0))
