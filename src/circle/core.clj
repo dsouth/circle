@@ -1,5 +1,5 @@
 (ns circle.core
-  (:require [ide.edit :as edit])
+  (:require [circle.edit :as edit])
   (:import (javax.swing JFrame JComponent)
            (java.awt Color Font RenderingHints)
            (java.awt.event KeyEvent KeyListener)))
