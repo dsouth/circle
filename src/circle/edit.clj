@@ -20,6 +20,11 @@
       (dec x)
       x)))
 
+(defn delete-char-at [v i]
+  (if (= (inc i) (count v))
+    (subvec v 0 i)
+    (apply conj (subvec v 0 i) (subvec v (inc i)))))
+
 (defn dummy [_ line-length]
   line-length)
 
@@ -46,7 +51,7 @@
         (delete-eol))
       (delete-char))))
 
-(defn add-char-end-of-line [line-number new-line-text]
+(defn modify-buffer-line [line-number new-line-text]
   (dosync
    (alter buffer assoc line-number new-line-text)
    (alter cursor-x #(inc %))))
@@ -57,8 +62,13 @@
    (alter cursor-line #(inc %))
    (alter cursor-x #(* % 0))))
 
+(defn add-char-to-line-at [v i x]
+  (if (= i (count v))
+    (conj v x)
+    (apply conj (conj (subvec v 0 i) x) (subvec v i))))
+
 (defn add-char [c]
   (cond
    (= c \newline) (add-newline-end-of-line)
-   (Character/isDefined c) (add-char-end-of-line @cursor-line
-                                                 (conj (@buffer @cursor-line) c))))
+   (Character/isDefined c) (modify-buffer-line @cursor-line
+                                               (add-char-to-line-at (@buffer @cursor-line) @cursor-x c))))
