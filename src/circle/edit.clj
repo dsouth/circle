@@ -23,23 +23,28 @@
 (defn dummy [_ line-length]
   line-length)
 
-(defn delete-eol [new-size line-length]
-  (dosync
-   (alter buffer subvec 0 new-size)
-   (alter cursor-line #(dec %))
-   (alter cursor-x dummy line-length)))
+(defn delete-eol []
+  (let [new-size (dec (count @buffer))
+        line-length (count (get-line (dec @cursor-line)))]
+    (dosync
+     (alter buffer subvec 0 new-size)
+     (alter cursor-line #(dec %))
+     (alter cursor-x dummy line-length))))
+
+(defn delete-char []
+  (let [line-number @cursor-line
+        end (dec (count (@buffer @cursor-line)))
+        altered (subvec (@buffer line-number) 0 end)]
+    (dosync
+     (alter buffer assoc line-number altered)
+     (alter cursor-x #(dec %)))))
 
 (defn delete []
   (let [line-number @cursor-line]
     (if (= [] (@buffer line-number))
       (if (> (count @buffer) 1)
-        (delete-eol (dec (count @buffer))
-                    (count (get-line (dec @cursor-line)))))
-      (let [end (dec (count (@buffer @cursor-line)))
-            altered (subvec (@buffer line-number) 0 end)]
-        (dosync
-         (alter buffer assoc line-number altered)
-         (alter cursor-x #(dec %)))))))
+        (delete-eol))
+      (delete-char))))
 
 (defn add-char-end-of-line [line-number new-line-text]
   (dosync
