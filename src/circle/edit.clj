@@ -17,27 +17,29 @@
 (defn get-horizontal-cursor-position []
   (let [x @cursor-x]
     (if (> x 0)
-      (- x 1)
+      (dec x)
       x)))
 
 (defn dummy [_ line-length]
   line-length)
 
+(defn delete-eol [new-size line-length]
+  (dosync
+   (alter buffer subvec 0 new-size)
+   (alter cursor-line #(dec %))
+   (alter cursor-x dummy line-length))  )
+
 (defn delete []
   (let [line-number @cursor-line]
     (if (= [] (@buffer line-number))
       (if (> (count @buffer) 1)
-        (let [new-size (- (count @buffer) 1)
-              line-length (count (get-line (- @cursor-line 1)))]
-          (dosync
-           (alter buffer subvec 0 new-size)
-           (alter cursor-line #(- % 1))
-           (alter cursor-x dummy line-length))))
-      (let [end (- (count (@buffer @cursor-line)) 1)
+        (delete-eol (dec (count @buffer))
+                    (count (get-line (dec @cursor-line)))))
+      (let [end (dec (count (@buffer @cursor-line)))
             altered (subvec (@buffer line-number) 0 end)]
         (dosync
          (alter buffer assoc line-number altered)
-         (alter cursor-x #(- % 1)))))))
+         (alter cursor-x #(dec %)))))))
 
 (defn add-char-end-of-line [line-number new-line-text]
   (dosync
