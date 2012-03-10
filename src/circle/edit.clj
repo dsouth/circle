@@ -60,4 +60,5 @@
 (defn add-char [c]
   (cond
    (= c \newline) (add-newline-end-of-line)
-   (Character/isDefined c) (add-char-end-of-line @cursor-line (conj (@buffer @cursor-line) c))))
+   (Character/isDefined c) (add-char-end-of-line @cursor-line
+                                                 (conj (@buffer @cursor-line) c))))
