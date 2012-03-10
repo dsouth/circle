@@ -28,10 +28,10 @@
 (defn get-cursor-x [font frc s]
   (if (= 0 (count s))
     0
-    (let [glyph-vector (.createGlyphVector font frc s)
-          cursor-index (edit/get-horizontal-cursor-position)
-          bounding-shape (.getGlyphLogicalBounds glyph-vector cursor-index)
-          bounding-rect (.getBounds bounding-shape)]
+    (let [cursor-index (edit/get-horizontal-cursor-position)
+          bounding-rect (-> (.createGlyphVector font frc s)
+                            (.getGlyphLogicalBounds cursor-index)
+                            .getBounds)]
       (int (+ (.getX bounding-rect) (.getWidth bounding-rect))))))
 
 (defn baseline [i line-height descent]
