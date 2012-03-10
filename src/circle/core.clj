@@ -66,7 +66,7 @@
 (def panel editor)
 (.addKeyListener panel keylistener)
 
-(def frame (JFrame.))
+(def frame (JFrame. "Circle"))
 (.setDefaultCloseOperation frame JFrame/DISPOSE_ON_CLOSE)
 (.add frame panel)
 (.pack frame)
