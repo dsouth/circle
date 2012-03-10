@@ -27,7 +27,7 @@
   (dosync
    (alter buffer subvec 0 new-size)
    (alter cursor-line #(dec %))
-   (alter cursor-x dummy line-length))  )
+   (alter cursor-x dummy line-length)))
 
 (defn delete []
   (let [line-number @cursor-line]
