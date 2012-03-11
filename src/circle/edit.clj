@@ -36,7 +36,7 @@
      (alter cursor-line #(dec %))
      (alter cursor-x dummy line-length))))
 
-(defn delete-char []
+(defn delete-char-before-cursor []
   (let [line-number @cursor-line
         end (dec (count (@buffer @cursor-line)))
         altered (delete-char-at (@buffer @cursor-line) @cursor-x)]
@@ -46,15 +46,30 @@
 
 (defn delete []
   (let [line-number @cursor-line]
-    (if (= [] (@buffer line-number))
+    (if (= 0 @cursor-x)
       (if (> (count @buffer) 1)
         (delete-eol))
-      (delete-char))))
+      (delete-char-before-cursor))))
 
 (defn modify-buffer-line [line-number new-line-text]
   (dosync
    (alter buffer assoc line-number new-line-text)
    (alter cursor-x #(inc %))))
+
+(defn add-newline [v x]
+  (if (= x (count v))
+    [v []]
+    [(subvec v 0 x) (subvec v x)]))
+
+(defn add-newline-at-cursor [buffer line x]
+  (let [start-of-document (apply conj
+                                 (subvec buffer 0 line)
+                                 (add-newline (buffer line) x))]
+    (if (= (inc line) (count buffer))
+      start-of-document
+      (apply conj
+             start-of-document
+             (subvec buffer (inc line))))))
 
 (defn add-newline-end-of-line []
   (dosync
@@ -62,10 +77,19 @@
    (alter cursor-line #(inc %))
    (alter cursor-x #(* % 0))))
 
+(defn add-to-eol? [v i]
+  (= i (count v)))
+
+(defn add-char-at-eol [v x]
+  (conj v x))
+
+(defn add-char-at [v i x]
+    (apply conj (conj (subvec v 0 i) x) (subvec v i)))
+
 (defn add-char-to-line-at [v i x]
-  (if (= i (count v))
-    (conj v x)
-    (apply conj (conj (subvec v 0 i) x) (subvec v i))))
+  (if (add-to-eol? v i)
+    (add-char-at-eol v x)
+    (add-char-at v i x)))
 
 (defn add-char [c]
   (cond

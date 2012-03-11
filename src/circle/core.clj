@@ -34,12 +34,17 @@
                             .getBounds)]
       (int (+ (.getX bounding-rect) (.getWidth bounding-rect))))))
 
-(defn baseline [i line-height descent]
+(defn baseline
+  "Given the index, i, of a line of text, its height and descent
+returns the baseline for drwaing the line"
+  [i line-height descent]
   (- (* (+ 1 i)
         line-height)
      descent))
 
-(defn editor-paint [g]
+(defn editor-paint
+  "Paint the contents of the editor given the Grapics g"
+  [g]
   (let [font-metrics (.getFontMetrics g)
         frc (.getFontRenderContext g)
         s (edit/get-line 0)
