@@ -97,8 +97,14 @@
     (add-char-at-eol v x)
     (add-char-at v i x)))
 
+(defn newline? [c]
+  (= c \newline))
+
+(defn character? [c]
+  (Character/isDefined c))
+
 (defn add-char [c]
   (cond
-   (= c \newline) (add-newline-end-of-line)
-   (Character/isDefined c) (modify-buffer-line @cursor-line
-                                               (add-char-to-line-at (@buffer @cursor-line) @cursor-x c))))
+   (newline? c) (add-newline-end-of-line)
+   (character? c) (modify-buffer-line @cursor-line
+                                      (add-char-to-line-at (@buffer @cursor-line) @cursor-x c))))
