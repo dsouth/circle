@@ -21,9 +21,9 @@
       x)))
 
 (defn delete-char-at [v i]
-  (if (= (inc i) (count v))
-    (subvec v 0 i)
-    (apply conj (subvec v 0 i) (subvec v (inc i)))))
+  (if (= i (count v))
+    (subvec v 0 (dec i))
+    (apply conj (subvec v 0 (dec i)) (subvec v i))))
 
 (defn dummy [_ line-length]
   line-length)
@@ -39,7 +39,7 @@
 (defn delete-char []
   (let [line-number @cursor-line
         end (dec (count (@buffer @cursor-line)))
-        altered (subvec (@buffer line-number) 0 end)]
+        altered (delete-char-at (@buffer @cursor-line) @cursor-x)]
     (dosync
      (alter buffer assoc line-number altered)
      (alter cursor-x #(dec %)))))
