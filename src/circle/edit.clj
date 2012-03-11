@@ -61,15 +61,21 @@
     [v []]
     [(subvec v 0 x) (subvec v x)]))
 
+(defn adding-newline-at-end-of-document? [buffer line]
+  (= (inc line) (count buffer)))
+
+(defn new-document-with-modification [start-of-document buffer line]
+  (apply conj
+         start-of-document
+         (subvec buffer (inc line))))
+
 (defn add-newline-at-cursor [buffer line x]
   (let [start-of-document (apply conj
                                  (subvec buffer 0 line)
                                  (add-newline (buffer line) x))]
-    (if (= (inc line) (count buffer))
+    (if (adding-newline-at-end-of-document? buffer line)
       start-of-document
-      (apply conj
-             start-of-document
-             (subvec buffer (inc line))))))
+      (new-document-with-modification start-of-document buffer line))))
 
 (defn add-newline-end-of-line []
   (dosync
