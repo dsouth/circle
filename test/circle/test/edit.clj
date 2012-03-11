@@ -3,6 +3,9 @@
   (:use circle.edit))
 
 (facts "about adding character"
-       (add-char-to-line-at [2 3 4] 0 1) => [1 2 3 4]
-       (add-char-to-line-at [1 2 4 5] 2 3) => [1 2 3 4 5]
-       (add-char-to-line-at [1 2 3 4] 4 5) => [1 2 3 4 5])
+       (add-char-to-line-at (vec "bcd") 0 \a) => (vec "abcd")
+       (add-char-to-line-at (vec "abde") 2 \c) => (vec "abcde")
+       (add-char-to-line-at (vec "abcd") 4 \e) => (vec "abcde"))
+
+(facts "about deleting character"
+       (delete-char-at (vec "zabc") 0) => (vec "abc"))
