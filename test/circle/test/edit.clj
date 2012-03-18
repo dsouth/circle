@@ -48,11 +48,20 @@
 
 (facts "about moving the cursor"
        (forward [(vec "first")] 0 0) => [0 1]
-       (forward [(vec "first")] 0 1) => [0 2])
+       (forward [(vec "first")] 0 1) => [0 2]
+       (backward [(vec "first")] 0 5) => [0 4]
+       (backward [(vec "first")] 0 4) => [0 3])
 
-(facts "about moving past then end of the line"
+(facts "about moving past the end of the line"
        (forward [(vec "first")
-                        (vec "second")] 0 5) => [1 0])
+                 (vec "second")] 0 5) => [1 0])
+
+(facts "about moving past the beginning of a line"
+       (backward [(vec "first")
+                  (vec "second")] 1 0) => [0 5])
 
 (facts "about not moving past the end of the document"
        (forward [(vec "first")] 0 5) => [0 5])
+
+(facts "about moving past the beginning of the document"
+       (backward [(vec "first")] 0 0) => [0 0])

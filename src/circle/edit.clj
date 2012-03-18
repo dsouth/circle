@@ -120,3 +120,15 @@
 
    :otherwise
    [(inc line) 0]))
+
+(defn backward [buffer line x]
+  (cond
+   (and (= 0 x line))
+   [0 0]
+
+   (> x 0)
+   [line (dec x)]
+
+   :otherwise
+   (let [l (dec line)]
+     [l (count (buffer l))])))
