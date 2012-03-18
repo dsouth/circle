@@ -108,3 +108,15 @@
    (newline? c) (add-newline-end-of-line)
    (character? c) (modify-buffer-line @cursor-line
                                       (add-char-to-line-at (@buffer @cursor-line) @cursor-x c))))
+
+(defn forward [buffer line x]
+  (cond
+   (and (= (inc line) (count buffer))
+        (= x (count (buffer line))))
+   [line x]
+
+   (< x (count (buffer line)))
+   [line (inc x)]
+
+   :otherwise
+   [(inc line) 0]))

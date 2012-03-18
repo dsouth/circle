@@ -45,3 +45,14 @@
            (vec "second")
            []
            (vec "third")])
+
+(facts "about moving the cursor"
+       (forward [(vec "first")] 0 0) => [0 1]
+       (forward [(vec "first")] 0 1) => [0 2])
+
+(facts "about moving past then end of the line"
+       (forward [(vec "first")
+                        (vec "second")] 0 5) => [1 0])
+
+(facts "about not moving past the end of the document"
+       (forward [(vec "first")] 0 5) => [0 5])
