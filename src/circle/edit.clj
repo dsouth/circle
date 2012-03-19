@@ -15,18 +15,15 @@
   @cursor-line)
 
 (defn get-horizontal-cursor-position []
-  (let [x @cursor-x]
-    (if (> x 0)
-      (dec x)
-      x)))
+  @cursor-x)
 
 (defn delete-char-at [v i]
   (if (= i (count v))
     (subvec v 0 (dec i))
     (apply conj (subvec v 0 (dec i)) (subvec v i))))
 
-(defn dummy [_ line-length]
-  line-length)
+(defn dummy [_ x]
+  x)
 
 (defn delete-eol []
   (let [new-size (dec (count @buffer))
@@ -77,6 +74,12 @@
       start-of-document
       (new-document-with-modification start-of-document buffer line))))
 
+(defn modify-buffer []
+  (dosync
+   (alter buffer add-newline-at-cursor @cursor-line @cursor-x)
+   (alter cursor-line inc)
+   (alter cursor-x dummy 0)))
+
 (defn add-newline-end-of-line []
   (dosync
    (alter buffer assoc (inc @cursor-line) [])
@@ -105,7 +108,7 @@
 
 (defn add-char [c]
   (cond
-   (newline? c) (add-newline-end-of-line)
+   (newline? c) (modify-buffer)
    (character? c) (modify-buffer-line @cursor-line
                                       (add-char-to-line-at (@buffer @cursor-line) @cursor-x c))))
 
@@ -132,3 +135,15 @@
    :otherwise
    (let [l (dec line)]
      [l (count (buffer l))])))
+
+(defn- cursor-move [f]
+  (let [result (f @buffer @cursor-line @cursor-x)]
+    (dosync
+     (alter cursor-line dummy (result 0))
+     (alter cursor-x dummy (result 1)))))
+
+(defn cursor-forward []
+  (cursor-move forward))
+
+(defn cursor-backword []
+  (cursor-move backward))

@@ -50,7 +50,8 @@
        (forward [(vec "first")] 0 0) => [0 1]
        (forward [(vec "first")] 0 1) => [0 2]
        (backward [(vec "first")] 0 5) => [0 4]
-       (backward [(vec "first")] 0 4) => [0 3])
+       (backward [(vec "first")] 0 4) => [0 3]
+       (backward [(vec "first")] 0 1) => [0 0])
 
 (facts "about moving past the end of the line"
        (forward [(vec "first")

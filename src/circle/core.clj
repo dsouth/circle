@@ -10,9 +10,29 @@
   (.repaint editor))
 
 (defn key-pressed [event]
-  (if (= KeyEvent/VK_BACK_SPACE (.getKeyCode event))
-    (edit/delete)
-    (edit/add-char (.getKeyChar event))))
+  (let [code (.getKeyCode event)]
+    (cond
+     (= KeyEvent/VK_BACK_SPACE code)
+     (edit/delete)
+
+     (= KeyEvent/VK_LEFT code)
+     (do
+       (edit/cursor-backword)
+       (.repaint editor))
+
+     (= KeyEvent/VK_RIGHT code)
+     (println "RIGHT")
+
+     (= KeyEvent/VK_UP code)
+     (println "UP")
+
+     (= KeyEvent/VK_DOWN code)
+     (println "DOWN")
+
+     :otherwise
+     (edit/add-char (.getKeyChar event))))
+                                        ; probably inefficient, but this will do for now
+  (.repaint editor))
 
 (defn key-released [event])
 
@@ -26,13 +46,15 @@
       (key-released event))))
 
 (defn get-cursor-x [font frc s]
-  (if (= 0 (count s))
+  (if (or (= 0 (count s))
+          (= 0 (edit/get-horizontal-cursor-position)))
     0
-    (let [cursor-index (edit/get-horizontal-cursor-position)
+    (let [cursor-index (dec (edit/get-horizontal-cursor-position))
           bounding-rect (-> (.createGlyphVector font frc s)
                             (.getGlyphLogicalBounds cursor-index)
                             .getBounds)]
-      (int (+ (.getX bounding-rect) (.getWidth bounding-rect))))))
+      (int (+ (.getX bounding-rect)
+              (.getWidth bounding-rect))))))
 
 (defn baseline
   "Given the index, i, of a line of text, its height and descent
