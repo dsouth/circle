@@ -21,7 +21,9 @@
        (.repaint editor))
 
      (= KeyEvent/VK_RIGHT code)
-     (println "RIGHT")
+     (do
+       (edit/cursor-forward)
+       (.repaint editor))
 
      (= KeyEvent/VK_UP code)
      (println "UP")

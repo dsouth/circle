@@ -16,7 +16,7 @@
        (delete-char-at (vec "abc") 3) => (vec "ab"))
 
 (comment "delete at 0 should be removing the newline before the
-          beginning of a line")
+          beginning of a line and it isn't")
 
 (facts "about adding a newline"
        (add-newline (vec "abc") 0) => [[] (vec "abc")]
