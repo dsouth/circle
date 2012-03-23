@@ -25,6 +25,27 @@
 (defn dummy [_ x]
   x)
 
+(defn mush [[a b]]
+  (if (seq b)
+    [(apply conj a b)]
+    [a]))
+
+(defn delete-line [v i]
+  (let [head (subvec v 0 (dec i))
+        altered (mush (subvec v (dec i) (inc i)))
+        altered-head (apply conj head altered)]
+    (if (< (inc i) (count v))
+      (let [tail (subvec v (inc i))]
+        (apply conj altered-head tail))
+      altered-head)))
+
+(defn delete-line-stateful []
+  (let [new-x (count (@buffer (dec @cursor-line)))]
+    (dosync
+     (alter buffer delete-line @cursor-line)
+     (alter cursor-line dec)
+     (alter cursor-x dummy new-x))))
+
 (defn delete-eol []
   (let [new-size (dec (count @buffer))
         line-length (count (get-line (dec @cursor-line)))]
@@ -45,7 +66,7 @@
   (let [line-number @cursor-line]
     (if (= 0 @cursor-x)
       (if (> (count @buffer) 1)
-        (delete-eol))
+        (delete-line-stateful))
       (delete-char-before-cursor))))
 
 (defn modify-buffer-line [line-number new-line-text]

@@ -15,8 +15,18 @@
        (delete-char-at (vec "abc") 2) => (vec "ac")
        (delete-char-at (vec "abc") 3) => (vec "ab"))
 
-(comment "delete at 0 should be removing the newline before the
-          beginning of a line and it isn't")
+(facts "about combining lines"
+       (mush [[] []]) => [[]]
+       (mush [[] (vec "a")]) => [(vec "a")]
+       (mush [(vec "a") []]) => [(vec "a")]
+       (mush [(vec "a") (vec "b")]) => [(vec "ab")])
+
+(facts "about deleting a line"
+        (delete-line [(vec "abc") (vec "def")] 1) => [(vec "abcdef")]
+        (delete-line [(vec "abc") []] 1) => [(vec "abc")]
+        (delete-line [(vec "abc")
+                       (vec "def")
+                       (vec "ghi")] 1) => [(vec "abcdef") (vec "ghi")])
 
 (facts "about adding a newline"
        (add-newline (vec "abc") 0) => [[] (vec "abc")]
