@@ -157,6 +157,24 @@
    (let [l (dec line)]
      [l (count (buffer l))])))
 
+(defn vertical-movement [buffer line x p f]
+  (if (p line buffer)
+    (let [new-line (f line)
+          length (count (buffer new-line))]
+     (if (> x length)
+       [new-line length]
+       [new-line x]))
+    [line x]))
+
+(defn up-ok-to-move? [line _]
+  (> line 0))
+
+(defn up [buffer line x]
+  (vertical-movement buffer line x up-ok-to-move? #(dec %)))
+
+(defn down [buffer line x]
+  (vertical-movement buffer line x #(< (inc %1) (count %2)) #(inc %)))
+
 (defn- cursor-move [f]
   (let [result (f @buffer @cursor-line @cursor-x)]
     (dosync
@@ -168,3 +186,9 @@
 
 (defn cursor-backword []
   (cursor-move backward))
+
+(defn cursor-up []
+  (cursor-move up))
+
+(defn cursor-down []
+  (cursor-move down))

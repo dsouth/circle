@@ -9,32 +9,34 @@
 (defn key-typed [event]
   (.repaint editor))
 
+(defn do-with-repaint
+  ([f]
+     (f)
+     (.repaint editor))
+  ([f x]
+     (f x)
+     (.repaint editor)))
+
 (defn key-pressed [event]
   (let [code (.getKeyCode event)]
     (cond
      (= KeyEvent/VK_BACK_SPACE code)
-     (edit/delete)
+     (do-with-repaint edit/delete)
 
      (= KeyEvent/VK_LEFT code)
-     (do
-       (edit/cursor-backword)
-       (.repaint editor))
+     (do-with-repaint edit/cursor-backword)
 
      (= KeyEvent/VK_RIGHT code)
-     (do
-       (edit/cursor-forward)
-       (.repaint editor))
+     (do-with-repaint edit/cursor-forward)
 
      (= KeyEvent/VK_UP code)
-     (println "UP")
+     (do-with-repaint edit/cursor-up)
 
      (= KeyEvent/VK_DOWN code)
-     (println "DOWN")
+     (do-with-repaint edit/cursor-down)
 
      :otherwise
-     (edit/add-char (.getKeyChar event))))
-                                        ; probably inefficient, but this will do for now
-  (.repaint editor))
+     (do-with-repaint edit/add-char (.getKeyChar event)))))
 
 (defn key-released [event])
 
