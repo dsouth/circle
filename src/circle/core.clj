@@ -1,7 +1,7 @@
 (ns circle.core
   (:require [circle.edit :as edit])
-  (:import (javax.swing JFrame JComponent)
-           (java.awt Color Font RenderingHints)
+  (:import (javax.swing JFrame JComponent SwingUtilities)
+           (java.awt Color Dimension Font RenderingHints)
            (java.awt.event KeyEvent KeyListener)))
 
 (declare editor)
@@ -90,18 +90,24 @@ returns the baseline for drwaing the line"
 (def editor
   (proxy [JComponent] []
     (paint [g]
-      (editor-paint g))))
+      (editor-paint g))
+    (getPreferredSize []
+      (Dimension. 100 100))))
 
-(.setFont editor (Font. "Menlo" Font/PLAIN 24))
-
-(def panel editor)
-(.addKeyListener panel keylistener)
-
-(def frame (JFrame. "Circle"))
-(.setDefaultCloseOperation frame JFrame/DISPOSE_ON_CLOSE)
-(.add frame panel)
-(.pack frame)
-(.requestFocus panel) ;; perhaps on an expose listener? Or a focus manager???
+(defn main []
+  (def editor (proxy [JComponent] []
+                 (paint [g]
+                   (editor-paint g))
+                 (getPreferredSize []
+                   (Dimension. 100 100))))
+  (def frame (JFrame. "Circle"))
+  (.setFont editor (Font. "Menlo" Font/PLAIN 24))
+  (.addKeyListener editor keylistener)
+  (.setDefaultCloseOperation frame JFrame/DISPOSE_ON_CLOSE)
+  (.add frame editor)
+  (.pack frame)
+  (.requestFocus editor) ;; perhaps on an expose listener? Or a focus manager???
+  (.setVisible frame true))
 
 (defn show []
-  (.setVisible frame true))
+  (SwingUtilities/invokeLater main))
