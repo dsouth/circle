@@ -184,7 +184,7 @@
 (defn cursor-forward []
   (cursor-move forward))
 
-(defn cursor-backword []
+(defn cursor-backward []
   (cursor-move backward))
 
 (defn cursor-up []

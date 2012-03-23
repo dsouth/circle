@@ -24,7 +24,7 @@
      (do-with-repaint edit/delete)
 
      (= KeyEvent/VK_LEFT code)
-     (do-with-repaint edit/cursor-backword)
+     (do-with-repaint edit/cursor-backward)
 
      (= KeyEvent/VK_RIGHT code)
      (do-with-repaint edit/cursor-forward)
