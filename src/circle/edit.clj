@@ -5,6 +5,11 @@
 ;; buffer is a vector of line vectors
 (def buffer (ref [[]]))
 
+(defn longest-line-count
+  "Return the count of the longest line in the buffer"
+  []
+  (apply max (map count @buffer)))
+
 (defn line-count []
   (count @buffer))
 

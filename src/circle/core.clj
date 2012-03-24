@@ -49,14 +49,20 @@
     (keyReleased [event]
       (key-released event))))
 
+(defn get-bounding-rect
+  ([font frc]
+     (get-bounding-rect font frc "." 0))
+  ([font frc s i]
+       (-> (.createGlyphVector font frc s)
+           (.getGlyphLogicalBounds i)
+           .getBounds)))
+
 (defn get-cursor-x [font frc s]
   (if (or (= 0 (count s))
           (= 0 (edit/get-horizontal-cursor-position)))
     0
     (let [cursor-index (dec (edit/get-horizontal-cursor-position))
-          bounding-rect (-> (.createGlyphVector font frc s)
-                            (.getGlyphLogicalBounds cursor-index)
-                            .getBounds)]
+          bounding-rect (get-bounding-rect font frc s cursor-index)]
       (int (+ (.getX bounding-rect)
               (.getWidth bounding-rect))))))
 
@@ -67,6 +73,13 @@ returns the baseline for drwaing the line"
   (- (* (+ 1 i)
         line-height)
      descent))
+
+(defn set-preferred-size [font frc]
+  (let [bounding-rect (get-bounding-rect font frc)
+        height (* (edit/line-count) (.getHeight bounding-rect))
+        width (* (edit/longest-line-count) (.getWidth bounding-rect))
+        size (Dimension. width height)]
+    (.setPreferredSize editor size)))
 
 (defn editor-paint
   "Paint the contents of the editor given the Grapics g"
@@ -85,21 +98,16 @@ returns the baseline for drwaing the line"
           top (* i line-height)
           bottom (+ top line-height)
           cursor-x (get-cursor-x font frc (edit/get-line i))]
-      (.drawLine g cursor-x top cursor-x bottom))))
-
-(def editor
-  (proxy [JComponent] []
-    (paint [g]
-      (editor-paint g))
-    (getPreferredSize []
-      (Dimension. 100 100))))
+      (.drawLine g cursor-x top cursor-x bottom))
+    (set-preferred-size font frc)))
 
 (defn main []
   (def editor (proxy [JComponent] []
-                 (paint [g]
-                   (editor-paint g))
-                 (getPreferredSize []
-                   (Dimension. 100 100))))
+                (paintComponent [g]
+                  (proxy-super paintComponent g)
+                  (editor-paint g))
+                (getPreferredSize []
+                  (Dimension. 100 100))))
   (def frame (JFrame. "Circle"))
   (.setFont editor (Font. "Menlo" Font/PLAIN 24))
   (.addKeyListener editor keylistener)
