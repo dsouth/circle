@@ -30,6 +30,16 @@
 (defn dummy [_ x]
   x)
 
+(defn load [file]
+  (let [data (with-open [rdr (clojure.java.io/reader file)]
+               (doall (line-seq rdr)))
+        text (vec (map vec data))]
+    text))
+
+(defn load-buffer [file]
+  (dosync
+   (alter buffer dummy (load file))))
+
 (defn mush [[a b]]
   (if (seq b)
     [(apply conj a b)]
