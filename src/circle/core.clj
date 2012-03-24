@@ -1,6 +1,6 @@
 (ns circle.core
   (:require [circle.edit :as edit])
-  (:import (javax.swing JFrame JComponent SwingUtilities)
+  (:import (javax.swing JFrame JComponent JScrollPane SwingUtilities)
            (java.awt Color Dimension Font RenderingHints)
            (java.awt.event KeyEvent KeyListener)))
 
@@ -58,13 +58,14 @@
            .getBounds)))
 
 (defn get-cursor-x [font frc s]
-  (if (or (= 0 (count s))
-          (= 0 (edit/get-horizontal-cursor-position)))
-    0
-    (let [cursor-index (dec (edit/get-horizontal-cursor-position))
-          bounding-rect (get-bounding-rect font frc s cursor-index)]
+  "Returns the pixel x coordinate for the cursor. Assumes fixed width font.
+Also responsible for keeping the cursor in the viewport for the scroll pane."
+    (let [bounding-rect (get-bounding-rect font frc)
+          y (* -1 (.getY bounding-rect))]
+      (.translate bounding-rect 0 (+ y (* (dec (edit/get-cursor-line)) (.getHeight bounding-rect))))
+      (.scrollRectToVisible editor bounding-rect)
       (int (+ (.getX bounding-rect)
-              (.getWidth bounding-rect))))))
+              (* (edit/get-horizontal-cursor-position) (.getWidth bounding-rect))))))
 
 (defn baseline
   "Given the index, i, of a line of text, its height and descent
@@ -99,20 +100,22 @@ returns the baseline for drwaing the line"
           bottom (+ top line-height)
           cursor-x (get-cursor-x font frc (edit/get-line i))]
       (.drawLine g cursor-x top cursor-x bottom))
-    (set-preferred-size font frc)))
+    (set-preferred-size font frc)
+    (.revalidate editor)))
 
 (defn main []
   (def editor (proxy [JComponent] []
                 (paintComponent [g]
                   (proxy-super paintComponent g)
-                  (editor-paint g))
-                (getPreferredSize []
-                  (Dimension. 100 100))))
+                  (editor-paint g))))
   (def frame (JFrame. "Circle"))
   (.setFont editor (Font. "Menlo" Font/PLAIN 24))
   (.addKeyListener editor keylistener)
   (.setDefaultCloseOperation frame JFrame/DISPOSE_ON_CLOSE)
-  (.add frame editor)
+  (let [jsp (JScrollPane. editor)]
+    (.add frame jsp)
+    (.setPreferredSize jsp (Dimension. 800 600)))
+  (comment (.add frame editor))
   (.pack frame)
   (.requestFocus editor) ;; perhaps on an expose listener? Or a focus manager???
   (.setVisible frame true))
