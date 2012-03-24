@@ -1,18 +1,20 @@
-(ns circle.events
-  (:require [circle.edit :as edit]
-            [circle.core :as core])
+(ns circle.event
+  (:require [circle.edit :as edit])
   (:import (java.awt.event KeyEvent KeyListener)))
 
+(defn bad-kludge [e]
+  (def editor e))
+
 (defn key-typed [event]
-  (.repaint core/editor))
+  (.repaint editor))
 
 (defn do-with-repaint
   ([f]
      (f)
-     (.repaint core/editor))
+     (.repaint editor))
   ([f x]
      (f x)
-     (.repaint core/editor)))
+     (.repaint editor)))
 
 (defn key-pressed [event]
   (let [code (.getKeyCode event)]
@@ -21,10 +23,14 @@
      (do-with-repaint edit/delete)
 
      (= KeyEvent/VK_LEFT code)
-     (do-with-repaint edit/cursor-backward)
+     (do
+       (do-with-repaint edit/cursor-backward)
+       (.consume event))
 
      (= KeyEvent/VK_RIGHT code)
-     (do-with-repaint edit/cursor-forward)
+     (do
+       (do-with-repaint edit/cursor-forward)
+       (.consume event))
 
      (= KeyEvent/VK_UP code)
      (do

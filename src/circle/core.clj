@@ -1,56 +1,8 @@
 (ns circle.core
-  (:require [circle.edit :as edit])
+  (:require [circle.edit :as edit]
+            [circle.event :as event])
   (:import (javax.swing JFrame JComponent JScrollPane SwingUtilities)
            (java.awt Color Dimension Font RenderingHints)))
-
-(declare editor)
-
-(defn key-typed [event]
-  (.repaint editor))
-
-(defn do-with-repaint
-  ([f]
-     (f)
-     (.repaint editor))
-  ([f x]
-     (f x)
-     (.repaint editor)))
-
-(defn key-pressed [event]
-  (let [code (.getKeyCode event)]
-    (cond
-     (= KeyEvent/VK_BACK_SPACE code)
-     (do-with-repaint edit/delete)
-
-     (= KeyEvent/VK_LEFT code)
-     (do-with-repaint edit/cursor-backward)
-
-     (= KeyEvent/VK_RIGHT code)
-     (do-with-repaint edit/cursor-forward)
-
-     (= KeyEvent/VK_UP code)
-     (do
-       (do-with-repaint edit/cursor-up)
-       (.consume event))
-
-     (= KeyEvent/VK_DOWN code)
-     (do
-       (do-with-repaint edit/cursor-down)
-       (.consume event))
-
-     :otherwise
-     (do-with-repaint edit/add-char (.getKeyChar event)))))
-
-(defn key-released [event])
-
-(def keylistener
-  (proxy [KeyListener] []
-    (keyTyped [event]
-      (key-typed event))
-    (keyPressed [event]
-      (key-pressed event))
-    (keyReleased [event]
-      (key-released event))))
 
 (defn get-bounding-rect
   ([font frc]
@@ -59,6 +11,8 @@
        (-> (.createGlyphVector font frc s)
            (.getGlyphLogicalBounds i)
            .getBounds)))
+
+(declare editor)
 
 (defn get-cursor-x [font frc s]
   "Returns the pixel x coordinate for the cursor. Assumes fixed width font.
@@ -111,9 +65,10 @@ returns the baseline for drwaing the line"
                 (paintComponent [g]
                   (proxy-super paintComponent g)
                   (editor-paint g))))
+  (event/bad-kludge editor)
   (def frame (JFrame. "Circle"))
   (.setFont editor (Font. "Menlo" Font/PLAIN 24))
-  (.addKeyListener editor keylistener)
+  (.addKeyListener editor event/keylistener)
   (.setDefaultCloseOperation frame JFrame/DISPOSE_ON_CLOSE)
   (let [jsp (JScrollPane. editor)]
     (.add frame jsp)
