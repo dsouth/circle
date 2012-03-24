@@ -1,8 +1,7 @@
 (ns circle.core
   (:require [circle.edit :as edit])
   (:import (javax.swing JFrame JComponent JScrollPane SwingUtilities)
-           (java.awt Color Dimension Font RenderingHints)
-           (java.awt.event KeyEvent KeyListener)))
+           (java.awt Color Dimension Font RenderingHints)))
 
 (declare editor)
 
