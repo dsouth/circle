@@ -30,10 +30,14 @@
      (do-with-repaint edit/cursor-forward)
 
      (= KeyEvent/VK_UP code)
-     (do-with-repaint edit/cursor-up)
+     (do
+       (do-with-repaint edit/cursor-up)
+       (.consume event))
 
      (= KeyEvent/VK_DOWN code)
-     (do-with-repaint edit/cursor-down)
+     (do
+       (do-with-repaint edit/cursor-down)
+       (.consume event))
 
      :otherwise
      (do-with-repaint edit/add-char (.getKeyChar event)))))
