@@ -1,4 +1,5 @@
-(ns circle.state)
+(ns circle.state
+  (:require [circle.utils :as utils]))
 
 (def cursor-line (ref 0))
 (def cursor-x (ref 0))
@@ -13,4 +14,4 @@
 
 (defn load-buffer [file]
   (dosync
-   (alter state/buffer utils/dummy (load-source file))))
+   (alter buffer utils/dummy (load-source file))))
