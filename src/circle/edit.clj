@@ -24,17 +24,6 @@
     (subvec v 0 (dec i))
     (apply conj (subvec v 0 (dec i)) (subvec v i))))
 
-
-(defn load-source [file]
-  (let [data (with-open [rdr (clojure.java.io/reader file)]
-               (doall (line-seq rdr)))
-        text (vec (map vec data))]
-    text))
-
-(defn load-buffer [file]
-  (dosync
-   (alter state/buffer utils/dummy (load-source file))))
-
 (defn mush [[a b]]
   (if (seq b)
     [(apply conj a b)]
@@ -67,7 +56,7 @@
 (defn delete-char-before-cursor []
   (let [line-number @state/cursor-line
         end (dec (count (@state/buffer @state/cursor-line)))
-        altered (delete-char-at (@state/buffer @state/cursor-line) @state/cursor-x)]
+        altered (delete-char-at )]
     (dosync
      (alter state/buffer assoc line-number altered)
      (alter state/cursor-x #(dec %)))))
@@ -77,12 +66,7 @@
     (if (= 0 @state/cursor-x)
       (if (> (count @state/buffer) 1)
         (delete-line-stateful))
-      (delete-char-before-cursor))))
-
-(defn modify-buffer-line [line-number new-line-text]
-  (dosync
-   (alter state/buffer assoc line-number new-line-text)
-   (alter state/cursor-x #(inc %))))
+      (state/delete-char-before-cursor (delete-char-at (@state/buffer @state/cursor-line) @state/cursor-x)))))
 
 (defn add-newline [v x]
   (if (= x (count v))
@@ -104,18 +88,6 @@
     (if (adding-newline-at-end-of-document? buffer line)
       start-of-document
       (new-document-with-modification start-of-document buffer line))))
-
-(defn modify-buffer []
-  (dosync
-   (alter state/buffer add-newline-at-cursor @state/cursor-line @state/cursor-x)
-   (alter state/cursor-line inc)
-   (alter state/cursor-x utils/dummy 0)))
-
-(defn add-newline-end-of-line []
-  (dosync
-   (alter state/buffer assoc (inc @state/cursor-line) [])
-   (alter state/cursor-line #(inc %))
-   (alter state/cursor-x #(* % 0))))
 
 (defn add-to-eol? [v i]
   (= i (count v)))
@@ -139,6 +111,5 @@
 
 (defn add-char [c]
   (cond
-   (newline? c) (modify-buffer)
-   (character? c) (modify-buffer-line @state/cursor-line
-                                      (add-char-to-line-at (@state/buffer @state/cursor-line) @state/cursor-x c))))
+   (newline? c) (state/modify-buffer add-newline-at-cursor)
+   (character? c) (state/modify-buffer-line (add-char-to-line-at (@state/buffer @state/cursor-line) @state/cursor-x c))))

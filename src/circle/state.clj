@@ -6,6 +6,7 @@
 ;; buffer is a vector of line vectors
 (def buffer (ref [[]]))
 
+;; source file loading
 (defn load-source [file]
   (let [data (with-open [rdr (clojure.java.io/reader file)]
                (doall (line-seq rdr)))
@@ -15,3 +16,24 @@
 (defn load-buffer [file]
   (dosync
    (alter buffer utils/dummy (load-source file))))
+
+;; buffer modification via user interactions
+(defn modify-buffer [f]
+  "Used to add a newline at the cursor to the buffer."
+  (dosync
+   (alter buffer f @cursor-line @cursor-x)
+   (alter cursor-line inc)
+   (alter cursor-x utils/dummy 0)))
+
+(defn modify-buffer-line [new-line-text]
+  (let [line-number @cursor-line]
+    (dosync
+     (alter buffer assoc line-number new-line-text)
+     (alter cursor-x #(inc %)))))
+
+(defn delete-char-before-cursor [altered]
+  (let [line-number @cursor-line
+        end (dec (count (@buffer @cursor-line)))]
+    (dosync
+     (alter buffer assoc line-number altered)
+     (alter cursor-x #(dec %)))))
