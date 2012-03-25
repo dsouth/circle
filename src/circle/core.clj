@@ -56,7 +56,7 @@ returns the baseline for drwaing the line"
     (let [i (state/get-cursor-line)
           top (* i line-height)
           bottom (+ top line-height)
-          cursor-x (get-cursor-x font frc (stateget-line i))]
+          cursor-x (get-cursor-x font frc (state/get-line i))]
       (.drawLine g cursor-x top cursor-x bottom))
     (set-preferred-size font frc)
     (.revalidate editor)))
