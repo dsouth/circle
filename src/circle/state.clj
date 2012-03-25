@@ -6,6 +6,24 @@
 ;; buffer is a vector of line vectors
 (def buffer (ref [[]]))
 
+;; state getters
+(defn longest-line-count
+  "Return the count of the longest line in the buffer"
+  []
+  (apply max (map count @buffer)))
+
+(defn line-count []
+  (count @buffer))
+
+(defn get-line [i]
+  (apply str (@buffer i)))
+
+(defn get-cursor-line []
+  @cursor-line)
+
+(defn get-horizontal-cursor-position []
+  @cursor-x)
+
 ;; source file loading
 (defn load-source [file]
   (let [data (with-open [rdr (clojure.java.io/reader file)]

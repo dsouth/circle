@@ -2,23 +2,6 @@
   (:require [circle.state :as state]
             [circle.utils :as utils]))
 
-(defn longest-line-count
-  "Return the count of the longest line in the buffer"
-  []
-  (apply max (map count @state/buffer)))
-
-(defn line-count []
-  (count @state/buffer))
-
-(defn get-line [i]
-  (apply str (@state/buffer i)))
-
-(defn get-cursor-line []
-  @state/cursor-line)
-
-(defn get-horizontal-cursor-position []
-  @state/cursor-x)
-
 (defn delete-char-at [v i]
   (if (= i (count v))
     (subvec v 0 (dec i))

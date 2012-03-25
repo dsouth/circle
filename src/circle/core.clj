@@ -1,6 +1,7 @@
 (ns circle.core
   (:require [circle.edit :as edit]
-            [circle.event :as event])
+            [circle.event :as event]
+            [circle.state :as state])
   (:import (javax.swing JFrame JComponent JScrollPane SwingUtilities)
            (java.awt Color Dimension Font RenderingHints)))
 
@@ -19,10 +20,10 @@
 Also responsible for keeping the cursor in the viewport for the scroll pane."
     (let [bounding-rect (get-bounding-rect font frc)
           y (* -1 (.getY bounding-rect))]
-      (.translate bounding-rect 0 (+ y (* (dec (edit/get-cursor-line)) (.getHeight bounding-rect))))
+      (.translate bounding-rect 0 (+ y (* (dec (state/get-cursor-line)) (.getHeight bounding-rect))))
       (.scrollRectToVisible editor bounding-rect)
       (int (+ (.getX bounding-rect)
-              (* (edit/get-horizontal-cursor-position) (.getWidth bounding-rect))))))
+              (* (state/get-horizontal-cursor-position) (.getWidth bounding-rect))))))
 
 (defn baseline
   "Given the index, i, of a line of text, its height and descent
@@ -34,8 +35,8 @@ returns the baseline for drwaing the line"
 
 (defn set-preferred-size [font frc]
   (let [bounding-rect (get-bounding-rect font frc)
-        height (* (edit/line-count) (.getHeight bounding-rect))
-        width (* (edit/longest-line-count) (.getWidth bounding-rect))
+        height (* (state/line-count) (.getHeight bounding-rect))
+        width (* (state/longest-line-count) (.getWidth bounding-rect))
         size (Dimension. width height)]
     (.setPreferredSize editor size)))
 
@@ -44,18 +45,18 @@ returns the baseline for drwaing the line"
   [g]
   (let [font-metrics (.getFontMetrics g)
         frc (.getFontRenderContext g)
-        s (edit/get-line 0)
+        s (state/get-line 0)
         font (.getFont g)
         bounds (.getStringBounds font s frc)
         line-height (int (Math/ceil (.getHeight bounds)))]
-    (let [n (edit/line-count)
+    (let [n (state/line-count)
           descent (.getDescent font-metrics)]
       (dotimes [i n]
-        (.drawString g (edit/get-line i) 0 (baseline i line-height descent))))
-    (let [i (edit/get-cursor-line)
+        (.drawString g (state/get-line i) 0 (baseline i line-height descent))))
+    (let [i (state/get-cursor-line)
           top (* i line-height)
           bottom (+ top line-height)
-          cursor-x (get-cursor-x font frc (edit/get-line i))]
+          cursor-x (get-cursor-x font frc (stateget-line i))]
       (.drawLine g cursor-x top cursor-x bottom))
     (set-preferred-size font frc)
     (.revalidate editor)))
