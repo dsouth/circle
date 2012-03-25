@@ -1,5 +1,6 @@
 (ns circle.event
-  (:require [circle.edit :as edit])
+  (:require [circle.edit :as edit]
+            [circle.navigation :as navigation])
   (:import (java.awt.event KeyEvent KeyListener)))
 
 (defn bad-kludge [e]
@@ -24,22 +25,22 @@
 
      (= KeyEvent/VK_LEFT code)
      (do
-       (do-with-repaint edit/cursor-backward)
+       (do-with-repaint navigation/cursor-backward)
        (.consume event))
 
      (= KeyEvent/VK_RIGHT code)
      (do
-       (do-with-repaint edit/cursor-forward)
+       (do-with-repaint navigation/cursor-forward)
        (.consume event))
 
      (= KeyEvent/VK_UP code)
      (do
-       (do-with-repaint edit/cursor-up)
+       (do-with-repaint navigation/cursor-up)
        (.consume event))
 
      (= KeyEvent/VK_DOWN code)
      (do
-       (do-with-repaint edit/cursor-down)
+       (do-with-repaint navigation/cursor-down)
        (.consume event))
 
      :otherwise

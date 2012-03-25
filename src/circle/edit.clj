@@ -1,5 +1,6 @@
 (ns circle.edit
-  (:require [circle.state :as state]))
+  (:require [circle.state :as state]
+            [circle.utils :as utils]))
 
 (defn longest-line-count
   "Return the count of the longest line in the buffer"
@@ -23,8 +24,6 @@
     (subvec v 0 (dec i))
     (apply conj (subvec v 0 (dec i)) (subvec v i))))
 
-(defn dummy [_ x]
-  x)
 
 (defn load-source [file]
   (let [data (with-open [rdr (clojure.java.io/reader file)]
@@ -34,7 +33,7 @@
 
 (defn load-buffer [file]
   (dosync
-   (alter state/buffer dummy (load-source file))))
+   (alter state/buffer utils/dummy (load-source file))))
 
 (defn mush [[a b]]
   (if (seq b)
@@ -55,7 +54,7 @@
     (dosync
      (alter state/buffer delete-line @state/cursor-line)
      (alter state/cursor-line dec)
-     (alter state/cursor-x dummy new-x))))
+     (alter state/cursor-x utils/dummy new-x))))
 
 (defn delete-eol []
   (let [new-size (dec (count @state/buffer))
@@ -63,7 +62,7 @@
     (dosync
      (alter state/buffer subvec 0 new-size)
      (alter state/cursor-line #(dec %))
-     (alter state/cursor-x dummy line-length))))
+     (alter state/cursor-x utils/dummy line-length))))
 
 (defn delete-char-before-cursor []
   (let [line-number @state/cursor-line
@@ -110,7 +109,7 @@
   (dosync
    (alter state/buffer add-newline-at-cursor @state/cursor-line @state/cursor-x)
    (alter state/cursor-line inc)
-   (alter state/cursor-x dummy 0)))
+   (alter state/cursor-x utils/dummy 0)))
 
 (defn add-newline-end-of-line []
   (dosync
@@ -143,63 +142,3 @@
    (newline? c) (modify-buffer)
    (character? c) (modify-buffer-line @state/cursor-line
                                       (add-char-to-line-at (@state/buffer @state/cursor-line) @state/cursor-x c))))
-
-(defn forward [buffer line x]
-  (cond
-   (and (= (inc line) (count buffer))
-        (= x (count (buffer line))))
-   [line x]
-
-   (< x (count (buffer line)))
-   [line (inc x)]
-
-   :otherwise
-   [(inc line) 0]))
-
-(defn backward [buffer line x]
-  (cond
-   (and (= 0 x line))
-   [0 0]
-
-   (> x 0)
-   [line (dec x)]
-
-   :otherwise
-   (let [l (dec line)]
-     [l (count (buffer l))])))
-
-(defn vertical-movement [buffer line x p f]
-  (if (p line buffer)
-    (let [new-line (f line)
-          length (count (buffer new-line))]
-     (if (> x length)
-       [new-line length]
-       [new-line x]))
-    [line x]))
-
-(defn up-ok-to-move? [line _]
-  (> line 0))
-
-(defn up [buffer line x]
-  (vertical-movement buffer line x up-ok-to-move? #(dec %)))
-
-(defn down [buffer line x]
-  (vertical-movement buffer line x #(< (inc %1) (count %2)) #(inc %)))
-
-(defn- cursor-move [f]
-  (let [result (f @state/buffer @state/cursor-line @state/cursor-x)]
-    (dosync
-     (alter state/cursor-line dummy (result 0))
-     (alter state/cursor-x dummy (result 1)))))
-
-(defn cursor-forward []
-  (cursor-move forward))
-
-(defn cursor-backward []
-  (cursor-move backward))
-
-(defn cursor-up []
-  (cursor-move up))
-
-(defn cursor-down []
-  (cursor-move down))
