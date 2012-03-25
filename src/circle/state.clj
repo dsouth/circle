@@ -37,3 +37,10 @@
     (dosync
      (alter buffer assoc line-number altered)
      (alter cursor-x #(dec %)))))
+
+(defn delete-line [f]
+  (let [new-x (count (@buffer (dec @cursor-line)))]
+    (dosync
+     (alter buffer f @cursor-line)
+     (alter cursor-line dec)
+     (alter cursor-x utils/dummy new-x))))

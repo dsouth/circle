@@ -38,18 +38,11 @@
         (apply conj altered-head tail))
       altered-head)))
 
-(defn delete-line-stateful []
-  (let [new-x (count (@state/buffer (dec @state/cursor-line)))]
-    (dosync
-     (alter state/buffer delete-line @state/cursor-line)
-     (alter state/cursor-line dec)
-     (alter state/cursor-x utils/dummy new-x))))
-
 (defn delete []
   (let [line-number @state/cursor-line]
     (if (= 0 @state/cursor-x)
       (if (> (count @state/buffer) 1)
-        (delete-line-stateful))
+        (state/delete-line delete-line))
       (state/delete-char-before-cursor (delete-char-at (@state/buffer @state/cursor-line) @state/cursor-x)))))
 
 (defn add-newline [v x]
