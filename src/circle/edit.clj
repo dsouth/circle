@@ -45,22 +45,6 @@
      (alter state/cursor-line dec)
      (alter state/cursor-x utils/dummy new-x))))
 
-(defn delete-eol []
-  (let [new-size (dec (count @state/buffer))
-        line-length (count (get-line (dec @state/cursor-line)))]
-    (dosync
-     (alter state/buffer subvec 0 new-size)
-     (alter state/cursor-line #(dec %))
-     (alter state/cursor-x utils/dummy line-length))))
-
-(defn delete-char-before-cursor []
-  (let [line-number @state/cursor-line
-        end (dec (count (@state/buffer @state/cursor-line)))
-        altered (delete-char-at )]
-    (dosync
-     (alter state/buffer assoc line-number altered)
-     (alter state/cursor-x #(dec %)))))
-
 (defn delete []
   (let [line-number @state/cursor-line]
     (if (= 0 @state/cursor-x)
