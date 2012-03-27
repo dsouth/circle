@@ -3,6 +3,12 @@
             [circle.navigation :as navigation])
   (:import (java.awt.event KeyEvent KeyListener)))
 
+(def key-map {KeyEvent/VK_BACK_SPACE edit/delete
+              KeyEvent/VK_LEFT       navigation/cursor-backward
+              KeyEvent/VK_RIGHT      navigation/cursor-forward
+              KeyEvent/VK_UP         navigation/cursor-up
+              KeyEvent/VK_DOWN       navigation/cursor-down})
+
 (defn bad-kludge [e]
   (def editor e))
 
@@ -18,33 +24,11 @@
      (.repaint editor)))
 
 (defn key-pressed [event]
-  (let [code (.getKeyCode event)]
-    (cond
-     (= KeyEvent/VK_BACK_SPACE code)
-     (do-with-repaint edit/delete)
-
-     (= KeyEvent/VK_LEFT code)
-     (do
-       (do-with-repaint navigation/cursor-backward)
-       (.consume event))
-
-     (= KeyEvent/VK_RIGHT code)
-     (do
-       (do-with-repaint navigation/cursor-forward)
-       (.consume event))
-
-     (= KeyEvent/VK_UP code)
-     (do
-       (do-with-repaint navigation/cursor-up)
-       (.consume event))
-
-     (= KeyEvent/VK_DOWN code)
-     (do
-       (do-with-repaint navigation/cursor-down)
-       (.consume event))
-
-     :otherwise
-     (do-with-repaint edit/add-char (.getKeyChar event)))))
+  (let [f (key-map (.getKeyCode event))]
+    (if f
+      (apply do-with-repaint [f])
+      (do-with-repaint edit/add-char (.getKeyChar event)))
+    (.consume event)))
 
 (defn key-released [event])
 
