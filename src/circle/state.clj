@@ -24,16 +24,8 @@
 (defn get-horizontal-cursor-position []
   @cursor-x)
 
-;; source file loading
-(defn load-source [file]
-  (let [data (with-open [rdr (clojure.java.io/reader file)]
-               (doall (line-seq rdr)))
-        text (vec (map vec data))]
-    text))
-
-(defn load-buffer [file]
-  (dosync
-   (alter buffer utils/dummy (load-source file))))
+(defn load-buffer [b]
+  (dosync (alter buffer utils/dummy b)))
 
 ;; buffer modification via user interactions
 (defn modify-buffer [f]
