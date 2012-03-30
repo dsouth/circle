@@ -25,7 +25,9 @@
   @cursor-x)
 
 (defn load-buffer [b]
-  (dosync (alter buffer utils/dummy b)))
+  (dosync (alter buffer utils/dummy b)
+          (alter cursor-line utils/dummy 0)
+          (alter cursor-x utils/dummy 0)))
 
 ;; buffer modification via user interactions
 (defn modify-buffer [f]
