@@ -3,7 +3,8 @@
             [circle.file :as file]
             [circle.navigation :as navigation])
   (:import (java.awt FileDialog)
-           (java.awt.event KeyEvent KeyListener)))
+           (java.awt.event KeyEvent KeyListener)
+           (java.io FilenameFilter)))
 
 (def key-map {KeyEvent/VK_BACK_SPACE edit/delete
               KeyEvent/VK_LEFT       navigation/cursor-backward
@@ -14,13 +15,19 @@
 (defn set-frame [f]
   (def frame f))
 
+(def file-filter (proxy [FilenameFilter] []
+              (accept [_ f]
+                (.endsWith f ".clj"))))
+
 (defn gui-load []
   (let [jfc (FileDialog. frame "Load..." FileDialog/LOAD)]
+    (.setFilenameFilter jfc file-filter)
     (.setVisible jfc true)
     (let [result (.getFile jfc)
           file-dir (.getDirectory jfc)
           load-src (str file-dir result)]
-      (file/load-buffer load-src))))
+      (when result
+        (file/load-buffer load-src)))))
 
 (def meta-map {KeyEvent/VK_L gui-load})
 
