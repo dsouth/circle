@@ -1,6 +1,5 @@
 (ns circle.navigation
   (:require [circle.state :as state]
-            [circle.utils :as utils]
             [circle.dispatch :as dispatch]))
 
 (defn forward [buffer line x]

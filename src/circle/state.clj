@@ -1,6 +1,5 @@
 (ns circle.state
-  (:require [circle.dispatch :as dispatch]
-            [circle.utils :as utils]))
+  (:require [circle.dispatch :as dispatch]))
 
 (def cursor-line (ref 0))
 (def cursor-x (ref 0))
@@ -26,9 +25,9 @@
   @cursor-x)
 
 (defn load-buffer [b]
-  (dosync (alter buffer utils/dummy b)
-          (alter cursor-line utils/dummy 0)
-          (alter cursor-x utils/dummy 0))
+  (dosync (ref-set buffer b)
+          (ref-set cursor-line 0)
+          (ref-set cursor-x 0))
   (dispatch/fire :repaint nil))
 
 ;; buffer modification via user interactions
@@ -37,7 +36,7 @@
   (dosync
    (alter buffer f @cursor-line @cursor-x)
    (alter cursor-line inc)
-   (alter cursor-x utils/dummy 0)))
+   (ref-set cursor-x 0)))
 
 (defn modify-buffer-line [new-line-text]
   (let [line-number @cursor-line]
@@ -57,4 +56,4 @@
     (dosync
      (alter buffer f @cursor-line)
      (alter cursor-line dec)
-     (alter cursor-x utils/dummy new-x))))
+     (ref-set cursor-x new-x))))
