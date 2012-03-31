@@ -11,24 +11,7 @@
               KeyEvent/VK_UP         :key-up
               KeyEvent/VK_DOWN       :key-down})
 
-(defn set-frame [f]
-  (def frame f))
-
-(def file-filter (proxy [FilenameFilter] []
-              (accept [_ f]
-                (.endsWith f ".clj"))))
-
-(defn gui-load []
-  (let [jfc (FileDialog. frame "Load..." FileDialog/LOAD)]
-    (.setFilenameFilter jfc file-filter)
-    (.setVisible jfc true)
-    (let [result (.getFile jfc)
-          file-dir (.getDirectory jfc)
-          load-src (str file-dir result)]
-      (when result
-        (file/load-buffer load-src)))))
-
-(def meta-map {KeyEvent/VK_L :gui-load-src})
+(def meta-map {KeyEvent/VK_L :gui-load-file})
 
 (def modifier-map {0 key-map, KeyEvent/META_MASK meta-map})
 

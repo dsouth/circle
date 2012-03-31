@@ -2,6 +2,7 @@
   (:require [circle.config :as config]
             [circle.edit :as edit]
             [circle.event :as event]
+            [circle.gui :as gui]
             [circle.state :as state]
             [circle.dispatch :as dispatch])
   (:import (javax.swing JFrame JComponent JScrollPane SwingUtilities)
@@ -70,7 +71,7 @@ returns the baseline for drwaing the line"
                   (editor-paint g))))
   (event/bad-kludge editor)
   (def frame (JFrame. "Circle"))
-  (event/set-frame frame)
+  (gui/set-frame frame)
   (.setFont editor (Font. "Menlo" Font/PLAIN 24))
   (.addKeyListener editor event/keylistener)
   (.setDefaultCloseOperation frame JFrame/DISPOSE_ON_CLOSE)

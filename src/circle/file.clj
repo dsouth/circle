@@ -1,5 +1,5 @@
 (ns circle.file
-  (:require [circle.state :as state]))
+  (:require [circle.dispatch :as dispatch]))
 
 ;; source file loading
 (defn load-source [file]
@@ -9,4 +9,4 @@
     text))
 
 (defn load-buffer [file]
-  (state/load-buffer (load-source file)))
+  (dispatch/fire :state-load-buffer (load-source file)))
