@@ -48,5 +48,5 @@
 (defn cursor-move [f]
   (let [result (f @state/buffer @state/cursor-line @state/cursor-x)]
     (dosync
-     (alter state/cursor-line utils/dummy (result 0))
-     (alter state/cursor-x utils/dummy (result 1)))))
+     (ref-set state/cursor-line (result 0))
+     (ref-set state/cursor-x (result 1)))))
