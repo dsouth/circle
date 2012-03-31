@@ -25,8 +25,7 @@
   (let [line-number @state/cursor-line]
     (if (= 0 @state/cursor-x)
       (when (> (count @state/buffer) 1)
-        (state/delete-line delete-line)
-        (dispatch/fire :repaint nil))
+        (dispatch/fire :state-delete-line delete-line))
       (do
         (state/delete-char-before-cursor (delete-char-at (@state/buffer @state/cursor-line) @state/cursor-x))
         (dispatch/fire :repaint nil)))))

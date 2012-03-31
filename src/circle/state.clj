@@ -56,4 +56,5 @@
     (dosync
      (alter buffer f @cursor-line)
      (alter cursor-line dec)
-     (ref-set cursor-x new-x))))
+     (ref-set cursor-x new-x)))
+  (dispatch/fire :repaint nil))

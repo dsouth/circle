@@ -25,7 +25,8 @@
   (dispatch/add-reactor :key-typed     edit/add-char))
 
 (defn- state-config []
-  (dispatch/add-reactor :state-load-buffer state/load-buffer))
+  (dispatch/add-reactor :state-load-buffer state/load-buffer)
+  (dispatch/add-reactor :state-delete-line state/delete-line))
 
 (defn- gui-config []
   (dispatch/add-reactor :gui-load-file gui/load-file))
