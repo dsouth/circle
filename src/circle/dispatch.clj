@@ -25,7 +25,7 @@
      (alter reactors #(into {} (remove empty-set-in-map? (map (remover r) %))))))
 
 (defn fire [e d]
-  (println "firing " e)
+  (println e)
   (let [s (seq (e @reactors))]
     (when s
       (doseq [f s]

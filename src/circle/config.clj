@@ -30,8 +30,12 @@
 (defn- gui-config []
   (dispatch/add-reactor :gui-load-file gui/load-file))
 
+(defn- file-config []
+  (dispatch/add-reactor :file-load-buffer file/load-buffer))
+
 (defn config []
   (navigation-config)
   (edit-config)
   (state-config)
-  (gui-config))
+  (gui-config)
+  (file-config))

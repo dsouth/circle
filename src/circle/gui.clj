@@ -1,6 +1,5 @@
 (ns circle.gui
-  (:require [circle.dispatch :as dispatch]
-            [circle.file :as file])
+  (:require [circle.dispatch :as dispatch])
   (:import (java.awt FileDialog)
            (java.io FilenameFilter)))
 
@@ -19,4 +18,4 @@
           file-dir (.getDirectory jfc)
           load-src (str file-dir result)]
       (when result
-        (file/load-buffer load-src)))))
+        (dispatch/fire :file-load-buffer load-src)))))
