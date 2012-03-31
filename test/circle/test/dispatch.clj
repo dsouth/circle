@@ -37,3 +37,19 @@
                     (add-reactor :test record-results)
                     (remove-reactor record-results)
                     (fire :test :data))
+
+(defn answer [] 42)
+
+(against-background [(before :contents (dosync (ref-set askors {})))
+                     (after :contents (fact "add to no askors"
+                                            @askors => {:test :function}))]
+                    (add-askor :test :function))
+
+(against-background [(before :contents (dosync (ref-set askors {:get :blah})))
+                     (after :contents (fact "add to other askors"
+                                            @askors => {:get :blah :test :function}))]
+                    (add-askor :test :function))
+
+(against-background [(before :facts (dosync (ref-set askors {:test answer})))]
+                    (fact "askor returns value to askee"
+                          (receive :test) => 42))

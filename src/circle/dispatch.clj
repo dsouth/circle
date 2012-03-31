@@ -1,6 +1,7 @@
 (ns circle.dispatch)
 
 (def reactors (ref {}))
+(def askors (ref {}))
 
 (defn add-reactor [e f]
   (let [s (e @reactors)]
@@ -10,6 +11,10 @@
          (alter reactors assoc e new-s)))
       (dosync
        (alter reactors assoc e #{f})))))
+
+(defn add-askor [e f]
+  (dosync
+   (alter askors assoc e f)))
 
 (defn remover [reactor]
   (fn [m]
@@ -31,3 +36,8 @@
       (doseq [f s]
         (f d))
       (println "WARNING: no reactor for " e "!!"))))
+
+(defn receive [e]
+  (let [f (e @askors)]
+    (when f
+      (f))))
