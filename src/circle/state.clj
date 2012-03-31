@@ -49,7 +49,8 @@
         end (dec (count (@buffer @cursor-line)))]
     (dosync
      (alter buffer assoc line-number altered)
-     (alter cursor-x #(dec %)))))
+     (alter cursor-x #(dec %))))
+  (dispatch/fire :repaint nil))
 
 (defn delete-line [f]
   (let [new-x (count (@buffer (dec @cursor-line)))]

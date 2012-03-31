@@ -26,9 +26,8 @@
     (if (= 0 @state/cursor-x)
       (when (> (count @state/buffer) 1)
         (dispatch/fire :state-delete-line delete-line))
-      (do
-        (state/delete-char-before-cursor (delete-char-at (@state/buffer @state/cursor-line) @state/cursor-x))
-        (dispatch/fire :repaint nil)))))
+      (dispatch/fire :state-delete-char-before-cursor
+                     (delete-char-at (@state/buffer @state/cursor-line) @state/cursor-x)))))
 
 (defn add-newline [v x]
   (if (= x (count v))
