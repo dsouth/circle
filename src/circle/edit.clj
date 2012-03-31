@@ -25,9 +25,12 @@
 (defn delete [_]
   (let [line-number @state/cursor-line]
     (if (= 0 @state/cursor-x)
-      (if (> (count @state/buffer) 1)
-        (state/delete-line delete-line))
-      (state/delete-char-before-cursor (delete-char-at (@state/buffer @state/cursor-line) @state/cursor-x)))))
+      (when (> (count @state/buffer) 1)
+        (state/delete-line delete-line)
+        (dispatch/fire :repaint nil))
+      (do
+        (state/delete-char-before-cursor (delete-char-at (@state/buffer @state/cursor-line) @state/cursor-x))
+        (dispatch/fire :repaint nil)))))
 
 (defn add-newline [v x]
   (if (= x (count v))
@@ -72,5 +75,9 @@
 
 (defn add-char [c]
   (cond
-   (newline? c) (state/modify-buffer add-newline-at-cursor)
-   (character? c) (state/modify-buffer-line (add-char-to-line-at (@state/buffer @state/cursor-line) @state/cursor-x c))))
+   (newline? c) (do
+                  (state/modify-buffer add-newline-at-cursor)
+                  (dispatch/fire :repaint nil))
+   (character? c) (do
+                    (state/modify-buffer-line (add-char-to-line-at (@state/buffer @state/cursor-line) @state/cursor-x c))
+                    (dispatch/fire :repaint nil))))

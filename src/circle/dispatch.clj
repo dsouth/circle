@@ -27,6 +27,7 @@
 (defn fire [e d]
   (println e)
   (let [s (seq (e @reactors))]
-    (when s
+    (if s
       (doseq [f s]
-        (f d)))))
+        (f d))
+      (println "WARNING: no reactor for " e "!!"))))

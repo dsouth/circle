@@ -1,9 +1,6 @@
 (ns circle.event
-  (:require [circle.file :as file]
-            [circle.dispatch :as dispatch])
-  (:import (java.awt FileDialog)
-           (java.awt.event KeyEvent KeyListener)
-           (java.io FilenameFilter)))
+  (:require [circle.dispatch :as dispatch])
+  (:import (java.awt.event KeyEvent KeyListener)))
 
 (def key-map {KeyEvent/VK_BACK_SPACE :key-backspace
               KeyEvent/VK_LEFT       :key-left
@@ -14,12 +11,6 @@
 (def meta-map {KeyEvent/VK_L :gui-load-file})
 
 (def modifier-map {0 key-map, KeyEvent/META_MASK meta-map})
-
-(defn bad-kludge [e]
-  (def editor e))
-
-(defn key-typed [event]
-  (.repaint editor))
 
 (defn key-pressed [event]
   (let [m (modifier-map (.getModifiers event))]
@@ -34,6 +25,7 @@
             (.consume event)))))))
 
 (defn key-released [event])
+(defn key-typed [event])
 
 (def keylistener
   (proxy [KeyListener] []

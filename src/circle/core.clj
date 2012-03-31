@@ -69,7 +69,6 @@ returns the baseline for drwaing the line"
                 (paintComponent [g]
                   (proxy-super paintComponent g)
                   (editor-paint g))))
-  (event/bad-kludge editor)
   (def frame (JFrame. "Circle"))
   (gui/set-frame frame)
   (.setFont editor (Font. "Menlo" Font/PLAIN 24))
