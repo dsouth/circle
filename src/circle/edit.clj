@@ -1,6 +1,7 @@
 (ns circle.edit
   (:require [circle.state :as state]
-            [circle.utils :as utils]))
+            [circle.utils :as utils]
+            [circle.dispatch :as dispatch]))
 
 (defn delete-char-at [v i]
   (if (= i (count v))
@@ -21,7 +22,7 @@
         (apply conj altered-head tail))
       altered-head)))
 
-(defn delete []
+(defn delete [_]
   (let [line-number @state/cursor-line]
     (if (= 0 @state/cursor-x)
       (if (> (count @state/buffer) 1)

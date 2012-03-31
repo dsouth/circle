@@ -1,16 +1,15 @@
 (ns circle.event
-  (:require [circle.edit :as edit]
-            [circle.file :as file]
-            [circle.navigation :as navigation])
+  (:require [circle.file :as file]
+            [circle.dispatch :as dispatch])
   (:import (java.awt FileDialog)
            (java.awt.event KeyEvent KeyListener)
            (java.io FilenameFilter)))
 
-(def key-map {KeyEvent/VK_BACK_SPACE edit/delete
-              KeyEvent/VK_LEFT       navigation/cursor-backward
-              KeyEvent/VK_RIGHT      navigation/cursor-forward
-              KeyEvent/VK_UP         navigation/cursor-up
-              KeyEvent/VK_DOWN       navigation/cursor-down})
+(def key-map {KeyEvent/VK_BACK_SPACE :key-backspace
+              KeyEvent/VK_LEFT       :key-left
+              KeyEvent/VK_RIGHT      :key-right
+              KeyEvent/VK_UP         :key-up
+              KeyEvent/VK_DOWN       :key-down})
 
 (defn set-frame [f]
   (def frame f))
@@ -29,7 +28,7 @@
       (when result
         (file/load-buffer load-src)))))
 
-(def meta-map {KeyEvent/VK_L gui-load})
+(def meta-map {KeyEvent/VK_L :gui-load-src})
 
 (def modifier-map {0 key-map, KeyEvent/META_MASK meta-map})
 
@@ -39,25 +38,17 @@
 (defn key-typed [event]
   (.repaint editor))
 
-;; TODO possible to do args [] and remove arity???
-(defn do-with-repaint
-  ([f]
-     (f)
-     (.repaint editor))
-  ([f x]
-     (f x)
-     (.repaint editor)))
-
 (defn key-pressed [event]
   (let [m (modifier-map (.getModifiers event))]
     (when m
       (let [f (m (.getKeyCode event))]
         (if f
-          (apply do-with-repaint [f])
+          (do
+            (dispatch/fire f nil)
+            (.consume event))
           (when (= m key-map)
-            (do-with-repaint edit/add-char (.getKeyChar event))))
-        ;; Don't really think should always consume event... :/
-        (.consume event)))))
+            (dispatch/fire :key-typed (.getKeyChar event))
+            (.consume event)))))))
 
 (defn key-released [event])
 

@@ -1,6 +1,7 @@
 (ns circle.navigation
   (:require [circle.state :as state]
-            [circle.utils :as utils]))
+            [circle.utils :as utils]
+            [circle.dispatch :as dispatch]))
 
 (defn forward [buffer line x]
   (cond
@@ -44,20 +45,8 @@
 (defn down [buffer line x]
   (vertical-movement buffer line x #(< (inc %1) (count %2)) #(inc %)))
 
-(defn- cursor-move [f]
+(defn cursor-move [f]
   (let [result (f @state/buffer @state/cursor-line @state/cursor-x)]
     (dosync
      (alter state/cursor-line utils/dummy (result 0))
      (alter state/cursor-x utils/dummy (result 1)))))
-
-(defn cursor-forward []
-  (cursor-move forward))
-
-(defn cursor-backward []
-  (cursor-move backward))
-
-(defn cursor-up []
-  (cursor-move up))
-
-(defn cursor-down []
-  (cursor-move down))

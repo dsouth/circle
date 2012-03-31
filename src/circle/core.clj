@@ -1,7 +1,9 @@
 (ns circle.core
-  (:require [circle.edit :as edit]
+  (:require [circle.config :as config]
+            [circle.edit :as edit]
             [circle.event :as event]
-            [circle.state :as state])
+            [circle.state :as state]
+            [circle.dispatch :as dispatch])
   (:import (javax.swing JFrame JComponent JScrollPane SwingUtilities)
            (java.awt Color Dimension Font RenderingHints)))
 
@@ -78,7 +80,11 @@ returns the baseline for drwaing the line"
   (comment (.add frame editor))
   (.pack frame)
   (.requestFocus editor) ;; perhaps on an expose listener? Or a focus manager???
-  (.setVisible frame true))
+  (.setVisible frame true)
+  (config/config))
+
+; find a way to move this to config without cyclic dependency :(
+(dispatch/add-reactor :repaint (fn [_] (.repaint editor)))
 
 (defn show []
   (SwingUtilities/invokeLater main))
