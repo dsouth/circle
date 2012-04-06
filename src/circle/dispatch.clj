@@ -29,6 +29,7 @@
      (alter reactors #(into {} (remove empty-set-in-map? (map (remover r) %))))))
 
 (defn fire [e d]
+  "Given an event e and data d, will fire off the function(s) that are mapped to e, via add-reactor with parameter d."
   (println e)
   (let [s (seq (e @reactors))]
     (if s
@@ -37,6 +38,8 @@
       (println "WARNING: no reactor for " e "!!"))))
 
 (defn receive [e]
+  "Given an event e, will return the value of the function that e is mapped via add-askor."
   (let [f (e @askors)]
-    (when f
-      (f))))
+    (if f
+      (f)
+      (println "WARNING: no reciever for" e "!!"))))
