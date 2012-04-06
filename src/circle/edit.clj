@@ -73,9 +73,7 @@
 
 (defn add-char [c]
   (cond
-   (newline? c) (do
-                  (state/modify-buffer add-newline-at-cursor)
-                  (dispatch/fire :repaint nil))
+   (newline? c) (dispatch/fire :state-modify-buffer add-newline-at-cursor)
    (character? c) (do
                     (state/modify-buffer-line (add-char-to-line-at ((dispatch/receive :state-get-buffer) (dispatch/receive :state-get-cursor-line)) (dispatch/receive :state-get-cursor-x) c))))
   (dispatch/fire :repaint nil))
