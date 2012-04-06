@@ -30,6 +30,7 @@
   (dispatch/add-reactor :state-delete-char-before-cursor state/delete-char-before-cursor)
   (dispatch/add-reactor :state-move-cursor state/move-cursor)
   (dispatch/add-reactor :state-modify-buffer state/modify-buffer)
+  (dispatch/add-reactor :state-modify-buffer-line state/modify-buffer-line)
   (dispatch/add-askor :state-get-cursor-line #(identity @state/cursor-line))
   (dispatch/add-askor :state-get-cursor-x #(identity @state/cursor-x))
   (dispatch/add-askor :state-get-buffer #(identity @state/buffer)))
