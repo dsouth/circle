@@ -30,7 +30,8 @@
   (dispatch/add-reactor :state-delete-char-before-cursor state/delete-char-before-cursor)
   (dispatch/add-askor :state-get-cursor-line #(identity @state/cursor-line))
   (dispatch/add-askor :state-get-cursor-x #(identity @state/cursor-x))
-  (dispatch/add-askor :state-get-buffer #(identity @state/buffer)))
+  (dispatch/add-askor :state-get-buffer #(identity @state/buffer))
+  (dispatch/add-reactor :state-move-cursor state/move-cursor))
 
 (defn- gui-config []
   (dispatch/add-reactor :gui-load-file gui/load-source-file))
