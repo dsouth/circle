@@ -43,7 +43,8 @@
   (let [line-number @cursor-line]
     (dosync
      (alter buffer assoc line-number new-line-text)
-     (alter cursor-x #(inc %)))))
+     (alter cursor-x #(inc %))))
+  (dispatch/fire :repaint))
 
 (defn delete-char-before-cursor [altered]
   (let [line-number @cursor-line
