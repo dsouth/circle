@@ -27,10 +27,13 @@
 (defn- state-config []
   (dispatch/add-reactor :state-load-buffer state/load-buffer)
   (dispatch/add-reactor :state-delete-line state/delete-line)
-  (dispatch/add-reactor :state-delete-char-before-cursor state/delete-char-before-cursor))
+  (dispatch/add-reactor :state-delete-char-before-cursor state/delete-char-before-cursor)
+  (dispatch/add-askor :state-get-cursor-line #(identity @state/cursor-line))
+  (dispatch/add-askor :state-get-cursor-x #(identity @state/cursor-x))
+  (dispatch/add-askor :state-get-buffer #(identity @state/buffer)))
 
 (defn- gui-config []
-  (dispatch/add-reactor :gui-load-file gui/load-file))
+  (dispatch/add-reactor :gui-load-file gui/load-source-file))
 
 (defn- file-config []
   (dispatch/add-reactor :file-load-buffer file/load-buffer))

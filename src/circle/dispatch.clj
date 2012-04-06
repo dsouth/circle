@@ -4,13 +4,12 @@
 (def askors (ref {}))
 
 (defn add-reactor [e f]
-  (let [s (e @reactors)]
-    (if s
-      (let [new-s (conj s f)]
-        (dosync
-         (alter reactors assoc e new-s)))
+  (if-let [s (e @reactors)]
+    (let [new-s (conj s f)]
       (dosync
-       (alter reactors assoc e #{f})))))
+       (alter reactors assoc e new-s)))
+    (dosync
+     (alter reactors assoc e #{f}))))
 
 (defn add-askor [e f]
   (dosync

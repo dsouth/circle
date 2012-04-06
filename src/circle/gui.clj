@@ -10,7 +10,7 @@
               (accept [_ f]
                 (.endsWith f ".clj"))))
 
-(defn load-file [_]
+(defn load-source-file [_]
     (let [jfc (FileDialog. frame "Load..." FileDialog/LOAD)]
     (.setFilenameFilter jfc file-filter)
     (.setVisible jfc true)
