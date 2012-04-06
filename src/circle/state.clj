@@ -36,7 +36,8 @@
   (dosync
    (alter buffer f @cursor-line @cursor-x)
    (alter cursor-line inc)
-   (ref-set cursor-x 0)))
+   (ref-set cursor-x 0))
+  (dispatch/fire :repaint nil))
 
 (defn modify-buffer-line [new-line-text]
   (let [line-number @cursor-line]
