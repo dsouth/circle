@@ -59,3 +59,9 @@
      (alter cursor-line dec)
      (ref-set cursor-x new-x)))
   (dispatch/fire :repaint nil))
+
+(defn move-cursor [[line-num x]]
+  "Moves the cursor to line number line-num and horizontal position x."
+  (dosync
+   (ref-set cursor-line line-num)
+   (ref-set cursor-x x)))
