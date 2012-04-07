@@ -77,5 +77,4 @@
                         line-num (dispatch/receive :state-get-cursor-line)
                         x (dispatch/receive :state-get-cursor-x)
                         new-line (add-char-to-line-at (buffer line-num) x c)]
-                    (println "new line is " newline)
                     (dispatch/fire :state-modify-buffer-line new-line))))
