@@ -37,7 +37,7 @@ returns the baseline for drwaing the line"
 
 (defn set-preferred-size [font frc]
   (let [bounding-rect (get-bounding-rect font frc)
-        height (* (state/line-count) (.getHeight bounding-rect))
+        height (* (dispatch/receive :state-get-line-count) (.getHeight bounding-rect))
         width (* (state/longest-line-count) (.getWidth bounding-rect))
         size (Dimension. width height)]
     (.setPreferredSize editor size)))
