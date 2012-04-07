@@ -1,6 +1,5 @@
 (ns circle.edit
-  (:require [circle.state :as state]
-            [circle.dispatch :as dispatch]))
+  (:require [circle.dispatch :as dispatch]))
 
 (defn delete-char-at [v i]
   (if (= i (count v))
