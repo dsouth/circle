@@ -30,10 +30,10 @@
 
 (defn fire [e d]
   "Given an event e and data d, will fire off the function(s) that are mapped to e, via add-reactor with parameter d."
-  (println e)
   (let [s (seq (e @reactors))]
     (if s
       (doseq [f s]
+        (println f)
         (f d))
       (println "WARNING: no reactor for " e "!!"))))
 
