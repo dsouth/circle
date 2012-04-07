@@ -86,7 +86,4 @@ returns the baseline for drwaing the line"
 ; find a way to move this to config without cyclic dependency :(
 (dispatch/add-reactor :repaint (fn [_] (.repaint editor)))
 
-(defn show []
-  (SwingUtilities/invokeLater main))
-
-(show)
+(SwingUtilities/invokeLater main)
