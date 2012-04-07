@@ -40,12 +40,11 @@
 (defn receive
   "Given an event e, will return the value of the function that e is mapped via add-askor."
   ([e]
-     (let [f (e @askors)]
-       (if f
-         (f)
-         (println "WARNING: no reciever for" e "!!"))))
+     (receive e nil))
   ([e d]
      (let [f (e @askors)]
        (if f
-         (f d)
+         (if d
+           (f d)
+           (f))
          (println "WARNING: no receiver for" e "!!")))))
