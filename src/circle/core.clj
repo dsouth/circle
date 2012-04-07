@@ -1,6 +1,5 @@
 (ns circle.core
   (:require [circle.config :as config]
-            [circle.event :as event]
             [circle.gui :as gui]
             [circle.state :as state]
             [circle.dispatch :as dispatch])
