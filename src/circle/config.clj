@@ -1,6 +1,7 @@
 (ns circle.config
   (:require [circle.dispatch :as dispatch]
             [circle.edit :as edit]
+            [circle.event :as event]
             [circle.file :as file]
             [circle.gui :as gui]
             [circle.navigation :as navigation]
@@ -41,6 +42,9 @@
 (defn- file-config []
   (dispatch/add-reactor :file-load-buffer file/load-buffer))
 
+(defn- event-config []
+  (dispatch/add-askor :key-listener #(identity event/keylistener)))
+
 ;;; would really be nice if each namespace defined a config function and then
 ;;; that function was invoked for each namespace loaded?
 (defn config []
@@ -48,4 +52,5 @@
   (edit-config)
   (state-config)
   (gui-config)
-  (file-config))
+  (file-config)
+  (event-config))
