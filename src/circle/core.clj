@@ -1,6 +1,5 @@
 (ns circle.core
   (:require [circle.config :as config]
-            [circle.edit :as edit]
             [circle.event :as event]
             [circle.gui :as gui]
             [circle.state :as state]
@@ -65,6 +64,7 @@ returns the baseline for drwaing the line"
     (.revalidate editor)))
 
 (defn main []
+  (config/config)
   (def editor (proxy [JComponent] []
                 (paintComponent [g]
                   (proxy-super paintComponent g)
@@ -72,7 +72,7 @@ returns the baseline for drwaing the line"
   (def frame (JFrame. "Circle"))
   (gui/set-frame frame)
   (.setFont editor (Font. "Menlo" Font/PLAIN 24))
-  (.addKeyListener editor event/keylistener)
+  (.addKeyListener editor (dispatch/receive :key-listener))
   (.setDefaultCloseOperation frame JFrame/DISPOSE_ON_CLOSE)
   (let [jsp (JScrollPane. editor)]
     (.add frame jsp)
@@ -80,8 +80,7 @@ returns the baseline for drwaing the line"
   (comment (.add frame editor))
   (.pack frame)
   (.requestFocus editor) ;; perhaps on an expose listener? Or a focus manager???
-  (.setVisible frame true)
-  (config/config))
+  (.setVisible frame true))
 
 ; find a way to move this to config without cyclic dependency :(
 (dispatch/add-reactor :repaint (fn [_] (.repaint editor)))
