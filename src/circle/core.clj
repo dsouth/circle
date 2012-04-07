@@ -1,6 +1,5 @@
 (ns circle.core
   (:require [circle.config :as config]
-            [circle.gui :as gui]
             [circle.dispatch :as dispatch])
   (:import (javax.swing JFrame JComponent JScrollPane SwingUtilities)
            (java.awt Color Dimension Font RenderingHints)))
@@ -71,7 +70,7 @@ returns the baseline for drawing the line"
                   (proxy-super paintComponent g)
                   (editor-paint g))))
   (def frame (JFrame. "Circle"))
-  (gui/set-frame frame)
+  (dispatch/fire :set-frame frame)
   (.setFont editor (Font. "Menlo" Font/PLAIN 24))
   (.addKeyListener editor (dispatch/receive :key-listener))
   (.setDefaultCloseOperation frame JFrame/DISPOSE_ON_CLOSE)
