@@ -35,7 +35,8 @@
   (dispatch/add-askor :state-get-cursor-line #(identity @state/cursor-line))
   (dispatch/add-askor :state-get-cursor-x #(identity @state/cursor-x))
   (dispatch/add-askor :state-get-buffer #(identity @state/buffer))
-  (dispatch/add-askor :state-get-line-count state/line-count))
+  (dispatch/add-askor :state-get-line-count state/line-count)
+  (dispatch/add-askor :state-get-longest-line-count state/longest-line-count))
 
 (defn- gui-config []
   (dispatch/add-reactor :gui-load-file gui/load-source-file))
