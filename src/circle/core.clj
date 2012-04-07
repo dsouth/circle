@@ -19,6 +19,7 @@
 (defn get-cursor-x [font frc s]
   "Returns the pixel x coordinate for the cursor. Assumes fixed width font.
 Also responsible for keeping the cursor in the viewport for the scroll pane."
+  ;; NOT REALLY WORKING FOR KEEPING THE VIEW WHEN SCROLLING HORIZONTALLY :(
     (let [bounding-rect (get-bounding-rect font frc)
           y (* -1 (.getY bounding-rect))]
       (.translate bounding-rect 0 (+ y (* (dec (dispatch/receive :state-get-cursor-line))
