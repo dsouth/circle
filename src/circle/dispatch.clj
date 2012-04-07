@@ -28,17 +28,18 @@
     (dosync
      (alter reactors #(into {} (remove empty-set-in-map? (map (remover r) %))))))
 
-(defn fire [e d]
-  "Given an event e and data d, will fire off the function(s) that are mapped to e, via add-reactor with parameter d."
+(defn fire
+  "Given an event e and data d, will fire off the function(s) that are mapped to e, via add-reactor, with parameter d. Returns nil."
+  [e d]
   (let [s (seq (e @reactors))]
     (if s
       (doseq [f s]
-        (println f)
         (f d))
-      (println "WARNING: no reactor for " e "!!"))))
+      (println "WARNING: no reactor for" e "!!"))))
 
-(defn receive [e]
+(defn receive
   "Given an event e, will return the value of the function that e is mapped via add-askor."
+  [e]
   (let [f (e @askors)]
     (if f
       (f)
