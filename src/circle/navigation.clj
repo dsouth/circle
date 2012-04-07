@@ -1,5 +1,6 @@
 (ns circle.navigation
   (:require [circle.dispatch :as dispatch]))
+
 (defn forward [buffer line x]
   (cond
    (and (= (inc line) (count buffer))
