@@ -21,9 +21,6 @@
 (defn get-cursor-line []
   @cursor-line)
 
-(defn get-horizontal-cursor-position []
-  @cursor-x)
-
 (defn load-buffer [b]
   (dosync (ref-set buffer b)
           (ref-set cursor-line 0)
