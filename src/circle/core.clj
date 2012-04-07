@@ -1,7 +1,6 @@
 (ns circle.core
   (:require [circle.config :as config]
             [circle.gui :as gui]
-            [circle.state :as state]
             [circle.dispatch :as dispatch])
   (:import (javax.swing JFrame JComponent JScrollPane SwingUtilities)
            (java.awt Color Dimension Font RenderingHints)))
@@ -56,11 +55,11 @@ returns the baseline for drawing the line"
     (let [n (dispatch/receive :state-get-line-count)
           descent (.getDescent font-metrics)]
       (dotimes [i n]
-        (.drawString g (state/get-line i) 0 (baseline i line-height descent))))
-    (let [i (state/get-cursor-line)
+        (.drawString g (dispatch/receive :state-get-line i) 0 (baseline i line-height descent))))
+    (let [i (dispatch/receive :state-get-cursor-line)
           top (* i line-height)
           bottom (+ top line-height)
-          cursor-x (get-cursor-x font frc (state/get-line i))]
+          cursor-x (get-cursor-x font frc (dispatch/receive :state-get-line i))]
       (.drawLine g cursor-x top cursor-x bottom))
     (set-preferred-size font frc)
     (.revalidate editor)))
