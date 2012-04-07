@@ -48,7 +48,7 @@ returns the baseline for drwaing the line"
   [g]
   (let [font-metrics (.getFontMetrics g)
         frc (.getFontRenderContext g)
-        s (state/get-line 0)
+        s (dispatch/fire :state-get-line 0)
         font (.getFont g)
         bounds (.getStringBounds font s frc)
         line-height (int (Math/ceil (.getHeight bounds)))]
