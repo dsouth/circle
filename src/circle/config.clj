@@ -41,6 +41,8 @@
 (defn- file-config []
   (dispatch/add-reactor :file-load-buffer file/load-buffer))
 
+;;; would really be nice if each namespace defined a config function and then
+;;; that function was invoked for each namespace loaded?
 (defn config []
   (navigation-config)
   (edit-config)
