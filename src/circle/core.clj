@@ -16,9 +16,10 @@
 
 (declare editor)
 
-(defn get-cursor-x [font frc s]
+(defn get-cursor-x
   "Returns the pixel x coordinate for the cursor. Assumes fixed width font.
 Also responsible for keeping the cursor in the viewport for the scroll pane."
+  [font frc s]
   ;; NOT REALLY WORKING FOR KEEPING THE VIEW WHEN SCROLLING HORIZONTALLY :(
     (let [bounding-rect (get-bounding-rect font frc)
           y (* -1 (.getY bounding-rect))]
@@ -48,7 +49,7 @@ returns the baseline for drwaing the line"
   [g]
   (let [font-metrics (.getFontMetrics g)
         frc (.getFontRenderContext g)
-        s (dispatch/fire :state-get-line 0)
+        s (dispatch/receive :state-get-line)
         font (.getFont g)
         bounds (.getStringBounds font s frc)
         line-height (int (Math/ceil (.getHeight bounds)))]
@@ -86,4 +87,5 @@ returns the baseline for drwaing the line"
 ; find a way to move this to config without cyclic dependency :(
 (dispatch/add-reactor :repaint (fn [_] (.repaint editor)))
 
-(SwingUtilities/invokeLater main)
+(defn show []
+  (SwingUtilities/invokeLater main))
