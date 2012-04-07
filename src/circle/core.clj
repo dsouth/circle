@@ -21,10 +21,11 @@
 Also responsible for keeping the cursor in the viewport for the scroll pane."
     (let [bounding-rect (get-bounding-rect font frc)
           y (* -1 (.getY bounding-rect))]
-      (.translate bounding-rect 0 (+ y (* (dec (state/get-cursor-line)) (.getHeight bounding-rect))))
+      (.translate bounding-rect 0 (+ y (* (dec (dispatch/receive :state-get-cursor-line))
+                                          (.getHeight bounding-rect))))
       (.scrollRectToVisible editor bounding-rect)
       (int (+ (.getX bounding-rect)
-              (* (state/get-horizontal-cursor-position) (.getWidth bounding-rect))))))
+              (* (dispatch/receive :state-get-cursor-x) (.getWidth bounding-rect))))))
 
 (defn baseline
   "Given the index, i, of a line of text, its height and descent
