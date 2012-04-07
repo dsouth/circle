@@ -40,7 +40,8 @@
   (dispatch/add-askor :state-get-line state/get-line))
 
 (defn- gui-config []
-  (dispatch/add-reactor :gui-load-file gui/load-source-file))
+  (dispatch/add-reactor :gui-load-file gui/load-source-file)
+  (dispatch/add-reactor :set-frame gui/set-frame))
 
 (defn- file-config []
   (dispatch/add-reactor :file-load-buffer file/load-buffer))
