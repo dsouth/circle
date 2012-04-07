@@ -31,7 +31,7 @@ Also responsible for keeping the cursor in the viewport for the scroll pane."
 
 (defn baseline
   "Given the index, i, of a line of text, its height and descent
-returns the baseline for drwaing the line"
+returns the baseline for drawing the line"
   [i line-height descent]
   (- (* (+ 1 i)
         line-height)
@@ -49,11 +49,11 @@ returns the baseline for drwaing the line"
   [g]
   (let [font-metrics (.getFontMetrics g)
         frc (.getFontRenderContext g)
-        s (dispatch/receive :state-get-line)
+        s (dispatch/receive :state-get-line 0)
         font (.getFont g)
         bounds (.getStringBounds font s frc)
         line-height (int (Math/ceil (.getHeight bounds)))]
-    (let [n (state/line-count)
+    (let [n (dispatch/receive :state-get-line-count)
           descent (.getDescent font-metrics)]
       (dotimes [i n]
         (.drawString g (state/get-line i) 0 (baseline i line-height descent))))
