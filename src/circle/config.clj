@@ -37,7 +37,7 @@
   (dispatch/add-askor :state-get-buffer #(identity @state/buffer))
   (dispatch/add-askor :state-get-line-count state/line-count)
   (dispatch/add-askor :state-get-longest-line-count state/longest-line-count)
-  (dispatch/add-askor :state-get-line #(state/get-line 0)))
+  (dispatch/add-askor :state-get-line state/get-line))
 
 (defn- gui-config []
   (dispatch/add-reactor :gui-load-file gui/load-source-file))
