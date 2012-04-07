@@ -53,3 +53,7 @@
 (against-background [(before :facts (dosync (ref-set askors {:test answer})))]
                     (fact "askor returns value to askee"
                           (receive :test) => 42))
+
+(against-background [(before :facts (dosync (ref-set askors {:test inc})))]
+                    (fact "askor returns value with parameter to askee"
+                          (receive :test 3) => 4))
