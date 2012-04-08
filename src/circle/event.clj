@@ -15,8 +15,9 @@
 (def modifier-map {0 key-map, KeyEvent/META_MASK meta-map})
 
 (defn key-pressed [event]
-  (let [m (modifier-map (.getModifiers event))]
-    (when m
+  (let [modifier (.getModifiers event)
+        m (modifier-map modifier)]
+    (if m
       (let [f (m (.getKeyCode event))]
         (if f
           (do
@@ -25,7 +26,9 @@
           ; Normal key presses don't have a function. Maybe they should??? :|
           (when (= m key-map)
             (dispatch/fire :key-typed (.getKeyChar event))
-            (.consume event)))))))
+            (.consume event))))
+      (when (= KeyEvent/SHIFT_MASK)
+        (dispatch/fire :key-typed (.getKeyChar event))))))
 
 ; Java interop stuff...
 (defn key-released [event])
