@@ -1,6 +1,6 @@
 (ns circle.repl
   (:require [circle.dispatch :as dispatch])
-  (:import (java.io Writer)))
+  (:import (java.io Reader Writer)))
 
 (defn fire-type [s]
   (doseq [c s]
@@ -18,3 +18,20 @@
       ([a b c]
          (fire-type
           (str "write:" a ", " b ", " c " where class is " (class a)))))))
+
+(def gui-reader
+  (proxy [Reader] []
+    (close [])
+    (mark [])
+    (markSupported [] false)
+    (read
+      ([])
+      ([char-a])
+      ([char-a off len]))
+    (ready [] false)
+    (reset [])
+    (skip [x])))
+
+;;; for testing
+;;; (binding [*out* gui-writer *in* *in*]
+;;;   (clojure.main/main))
