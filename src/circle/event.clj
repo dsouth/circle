@@ -3,20 +3,26 @@
   (:import (java.awt.event KeyEvent KeyListener)))
 
 ; Map from Java Swing events to applicaiton events
-(def key-map {KeyEvent/VK_BACK_SPACE :key-backspace
-              KeyEvent/VK_LEFT       :key-left
-              KeyEvent/VK_RIGHT      :key-right
-              KeyEvent/VK_UP         :key-up
-              KeyEvent/VK_DOWN       :key-down})
+(def key-map (ref {KeyEvent/VK_BACK_SPACE :key-backspace
+                   KeyEvent/VK_LEFT       :key-left
+                   KeyEvent/VK_RIGHT      :key-right
+                   KeyEvent/VK_UP         :key-up
+                   KeyEvent/VK_DOWN       :key-down}))
 
-(def meta-map {KeyEvent/VK_L :gui-load-file})
+(def meta-map (ref {KeyEvent/VK_L :gui-load-file}))
+
+(defn add-to-key-map
+  "Adds an event to the key-map. When pressed, the event will be fired by
+the dispatch system."
+  [k]
+  )
 
 ; meta map for modification key to Java Swing to application event map
 (def modifier-map {0 key-map, KeyEvent/META_MASK meta-map})
 
 (defn key-pressed [event]
   (let [modifier (.getModifiers event)
-        m (modifier-map modifier)]
+        m @(modifier-map modifier)]
     (if m
       (let [f (m (.getKeyCode event))]
         (if f
@@ -24,7 +30,7 @@
             (dispatch/fire f nil)
             (.consume event))
           ; Normal key presses don't have a function. Maybe they should??? :|
-          (when (= m key-map)
+          (when (= m @key-map)
             (dispatch/fire :key-typed (.getKeyChar event))
             (.consume event))))
       (when (= KeyEvent/SHIFT_MASK)
