@@ -32,12 +32,12 @@
   (dispatch/add-reactor :state-move-cursor state/move-cursor)
   (dispatch/add-reactor :state-modify-buffer state/modify-buffer)
   (dispatch/add-reactor :state-modify-buffer-line state/modify-buffer-line)
-  (dispatch/add-askor :state-get-cursor-line #(identity @state/cursor-line))
-  (dispatch/add-askor :state-get-cursor-x #(identity @state/cursor-x))
-  (dispatch/add-askor :state-get-buffer #(identity @state/buffer))
-  (dispatch/add-askor :state-get-line-count state/line-count)
-  (dispatch/add-askor :state-get-longest-line-count state/longest-line-count)
-  (dispatch/add-askor :state-get-line state/get-line))
+  (dispatch/add-producer :state-get-cursor-line #(identity @state/cursor-line))
+  (dispatch/add-producer :state-get-cursor-x #(identity @state/cursor-x))
+  (dispatch/add-producer :state-get-buffer #(identity @state/buffer))
+  (dispatch/add-producer :state-get-line-count state/line-count)
+  (dispatch/add-producer :state-get-longest-line-count state/longest-line-count)
+  (dispatch/add-producer :state-get-line state/get-line))
 
 (defn- gui-config []
   (dispatch/add-reactor :gui-load-file gui/load-source-file)
@@ -47,7 +47,7 @@
   (dispatch/add-reactor :file-load-buffer file/load-buffer))
 
 (defn- event-config []
-  (dispatch/add-askor :key-listener #(identity event/keylistener)))
+  (dispatch/add-producer :key-listener #(identity event/keylistener)))
 
 ;;; would really be nice if each namespace defined a config function and then
 ;;; that function was invoked for each namespace loaded?
