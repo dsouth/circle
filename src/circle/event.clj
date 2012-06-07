@@ -11,11 +11,19 @@
 
 (def meta-map (ref {KeyEvent/VK_L :gui-load-file}))
 
+(defn- add-to-map [m k e]
+  (dosync
+   (alter m assoc k e)))
+
 (defn add-to-key-map
-  "Adds an event to the key-map. When pressed, the event will be fired by
-the dispatch system."
-  [k]
-  )
+  "Adds an event e to the key-map with key k."
+  [k e]
+  (add-to-map key-map k e))
+
+(defn add-to-meta-map
+  "Adds an event e to the meta-map with key k."
+  [k e]
+  (add-to-map meta-map k e))
 
 ; meta map for modification key to Java Swing to application event map
 (def modifier-map {0 key-map, KeyEvent/META_MASK meta-map})
