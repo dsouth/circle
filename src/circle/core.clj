@@ -85,4 +85,4 @@ returns the baseline for drawing the line"
 (dispatch/add-reactor :repaint (fn [_] (.repaint editor)))
 
 (defn show []
-  (SwingUtilities/invokeLater main))
+  (SwingUtilities/invokeAndWait main))
