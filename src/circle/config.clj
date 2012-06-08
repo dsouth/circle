@@ -12,7 +12,6 @@
 
 (defn- edit-config []
   (dispatch/add-reactor :key-backspace edit/delete)
-  (dispatch/add-reactor :key-typed     edit/add-char)
   (dispatch/add-reactor :key-event     edit/key-event))
 
 (defn- state-config []
