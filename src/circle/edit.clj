@@ -1,4 +1,5 @@
 (ns circle.edit
+  (:import (java.awt.event KeyEvent))
   (:require [circle.dispatch :as dispatch]))
 
 (defn delete-char-at [v i]
@@ -79,7 +80,11 @@
                         new-line (add-char-to-line-at (buffer line-num) x c)]
                     (dispatch/fire :state-modify-buffer-line new-line))))
 
-(defn key-event [{key :key modifier :modifier event :event}]
-  (when (and key (< modifier 2))
-    (add-char key)
-    (.consume event)))
+(defn key-event [{key :key code :code modifier :modifier event :event}]
+  (cond
+   (= code KeyEvent/VK_BACK_SPACE) (do
+                                     (delete nil)
+                                     (.consume event))
+   (and key (< modifier 2)) (do
+                              (add-char key)
+                              (.consume event))))
