@@ -16,5 +16,6 @@ for the String form or nil if the form is not valid."
   (doseq [c s]
     (dispatch/fire :key-event {:modifier 0 :code 0 :key c})))
 
-(defn- output-ns []
-  )
+(defn prompt []
+  (display-string (str *ns*))
+  (display-string "=>"))
