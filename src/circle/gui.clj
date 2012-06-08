@@ -21,9 +21,8 @@
       (when result
         (dispatch/fire :file-load-buffer load-src)))))
 
-(defn key-event [{key :key modifier :modifier event :event}]
-  (println (class key) key)
-  (when (and (= key \l)
+(defn key-event [{code :code modifier :modifier event :event}]
+  (when (and (= code KeyEvent/VK_L)
              (= modifier KeyEvent/META_MASK))
     (load-source-file nil)
     (.consume event)))

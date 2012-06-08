@@ -8,6 +8,7 @@
             [circle.state :as state]))
 
 (defn- navigation-config []
+  (dispatch/add-reactor :key-event navigation/key-event)
   (dispatch/add-reactor :key-right (fn [_]
                                      (navigation/cursor-move navigation/forward)
                                      (dispatch/fire :repaint nil)))

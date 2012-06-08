@@ -1,4 +1,5 @@
 (ns circle.navigation
+  (:import (java.awt.event KeyEvent))
   (:require [circle.dispatch :as dispatch]))
 
 (defn forward [buffer line x]
@@ -49,3 +50,14 @@
         x (dispatch/receive :state-get-cursor-x)
         result (f buffer line x)]
     (dispatch/fire :state-move-cursor result)))
+
+(def key-fn {KeyEvent/VK_RIGHT forward
+             KeyEvent/VK_LEFT  backward
+             KeyEvent/VK_UP    up
+             KeyEvent/VK_DOWN  down})
+
+(defn key-event [{code :code modifier :modifier event :event}]
+  (let [f (key-fn code)]
+    (when f
+      (cursor-move f)
+      (dispatch/fire :repaint nil))))
