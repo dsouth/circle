@@ -8,19 +8,7 @@
             [circle.state :as state]))
 
 (defn- navigation-config []
-  (dispatch/add-reactor :key-event navigation/key-event)
-  (dispatch/add-reactor :key-right (fn [_]
-                                     (navigation/cursor-move navigation/forward)
-                                     (dispatch/fire :repaint nil)))
-  (dispatch/add-reactor :key-left  (fn [_]
-                                     (navigation/cursor-move navigation/backward)
-                                     (dispatch/fire :repaint nil)))
-  (dispatch/add-reactor :key-up    (fn [_]
-                                     (navigation/cursor-move navigation/up)
-                                     (dispatch/fire :repaint nil)))
-  (dispatch/add-reactor :key-down  (fn [_]
-                                     (navigation/cursor-move navigation/down)
-                                     (dispatch/fire :repaint nil))))
+  (dispatch/add-reactor :key-event navigation/key-event))
 
 (defn- edit-config []
   (dispatch/add-reactor :key-backspace edit/delete)
