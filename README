@@ -4,10 +4,6 @@ Copyright (C) 2012 Douglas South
 
 TODO:
 
-Multiple lines
-
-Cursor movement with proper editing
-
 Selection (cut, copy, paste, deletion...)
 
 Formatting and highlighting (possibly pretty-lispy stuff too?)
