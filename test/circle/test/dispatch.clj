@@ -40,20 +40,20 @@
 
 (defn answer [] 42)
 
-(against-background [(before :contents (dosync (ref-set askors {})))
-                     (after :contents (fact "add to no askors"
-                                            @askors => {:test :function}))]
-                    (add-askor :test :function))
+(against-background [(before :contents (dosync (ref-set producers {})))
+                     (after :contents (fact "add to no producers"
+                                            @producers => {:test :function}))]
+                    (add-producer :test :function))
 
-(against-background [(before :contents (dosync (ref-set askors {:get :blah})))
-                     (after :contents (fact "add to other askors"
-                                            @askors => {:get :blah :test :function}))]
-                    (add-askor :test :function))
+(against-background [(before :contents (dosync (ref-set producers {:get :blah})))
+                     (after :contents (fact "add to other producers"
+                                            @producers => {:get :blah :test :function}))]
+                    (add-producer :test :function))
 
-(against-background [(before :facts (dosync (ref-set askors {:test answer})))]
+(against-background [(before :facts (dosync (ref-set producers {:test answer})))]
                     (fact "askor returns value to askee"
                           (receive :test) => 42))
 
-(against-background [(before :facts (dosync (ref-set askors {:test inc})))]
+(against-background [(before :facts (dosync (ref-set producers {:test inc})))]
                     (fact "askor returns value with parameter to askee"
                           (receive :test 3) => 4))
