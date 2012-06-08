@@ -23,7 +23,8 @@
 
 (defn- edit-config []
   (dispatch/add-reactor :key-backspace edit/delete)
-  (dispatch/add-reactor :key-typed     edit/add-char))
+  (dispatch/add-reactor :key-typed     edit/add-char)
+  (dispatch/add-reactor :key-event     edit/key-event))
 
 (defn- state-config []
   (dispatch/add-reactor :state-load-buffer state/load-buffer)
@@ -40,6 +41,7 @@
   (dispatch/add-producer :state-get-line state/get-line))
 
 (defn- gui-config []
+  (dispatch/add-reactor :key-event gui/key-event)
   (dispatch/add-reactor :gui-load-file gui/load-source-file)
   (dispatch/add-reactor :set-frame gui/set-frame))
 

@@ -78,3 +78,8 @@
                         x (dispatch/receive :state-get-cursor-x)
                         new-line (add-char-to-line-at (buffer line-num) x c)]
                     (dispatch/fire :state-modify-buffer-line new-line))))
+
+(defn key-event [{key :key modifier :modifier event :event}]
+  (when (and key (< modifier 2))
+    (add-char key)
+    (.consume event)))

@@ -1,6 +1,7 @@
 (ns circle.gui
   (:require [circle.dispatch :as dispatch])
   (:import (java.awt FileDialog)
+           (java.awt.event KeyEvent)
            (java.io FilenameFilter)))
 
 (defn set-frame [f]
@@ -19,3 +20,10 @@
           load-src (str file-dir result)]
       (when result
         (dispatch/fire :file-load-buffer load-src)))))
+
+(defn key-event [{key :key modifier :modifier event :event}]
+  (println (class key) key)
+  (when (and (= key \l)
+             (= modifier KeyEvent/META_MASK))
+    (load-source-file nil)
+    (.consume event)))
