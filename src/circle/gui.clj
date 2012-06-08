@@ -11,7 +11,7 @@
               (accept [_ f]
                 (.endsWith f ".clj"))))
 
-(defn load-source-file [_]
+(defn load-source-file []
     (let [jfc (FileDialog. frame "Load..." FileDialog/LOAD)]
     (.setFilenameFilter jfc file-filter)
     (.setVisible jfc true)
@@ -24,5 +24,5 @@
 (defn key-event [{code :code modifier :modifier event :event}]
   (when (and (= code KeyEvent/VK_L)
              (= modifier KeyEvent/META_MASK))
-    (load-source-file nil)
+    (load-source-file)
     (.consume event)))

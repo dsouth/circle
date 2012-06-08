@@ -21,7 +21,7 @@
         (apply conj altered-head tail))
       altered-head)))
 
-(defn delete [_]
+(defn delete []
   (let [line-number (dispatch/receive :state-get-cursor-line)]
     (if (= 0 (dispatch/receive :state-get-cursor-x))
       (when (> (count (dispatch/receive :state-get-buffer)) 1)
@@ -83,7 +83,7 @@
 (defn key-event [{key :key code :code modifier :modifier event :event}]
   (cond
    (= code KeyEvent/VK_BACK_SPACE) (do
-                                     (delete nil)
+                                     (delete)
                                      (.consume event))
    (and key (< modifier 2)) (do
                               (add-char key)
