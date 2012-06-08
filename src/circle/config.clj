@@ -7,19 +7,22 @@
             [circle.navigation :as navigation]
             [circle.state :as state]))
 
+(defn- reactor [k f]
+  (dispatch/add-reactor k f))
+
 (defn- navigation-config []
-  (dispatch/add-reactor :key-event navigation/key-event))
+  (reactor :key-event navigation/key-event))
 
 (defn- edit-config []
-  (dispatch/add-reactor :key-event edit/key-event))
+  (reactor :key-event edit/key-event))
 
 (defn- state-config []
-  (dispatch/add-reactor :state-load-buffer state/load-buffer)
-  (dispatch/add-reactor :state-delete-line state/delete-line)
-  (dispatch/add-reactor :state-delete-char-before-cursor state/delete-char-before-cursor)
-  (dispatch/add-reactor :state-move-cursor state/move-cursor)
-  (dispatch/add-reactor :state-modify-buffer state/modify-buffer)
-  (dispatch/add-reactor :state-modify-buffer-line state/modify-buffer-line)
+  (reactor :state-load-buffer state/load-buffer)
+  (reactor :state-delete-line state/delete-line)
+  (reactor :state-delete-char-before-cursor state/delete-char-before-cursor)
+  (reactor :state-move-cursor state/move-cursor)
+  (reactor :state-modify-buffer state/modify-buffer)
+  (reactor :state-modify-buffer-line state/modify-buffer-line)
   (dispatch/add-producer :state-get-cursor-line #(identity @state/cursor-line))
   (dispatch/add-producer :state-get-cursor-x #(identity @state/cursor-x))
   (dispatch/add-producer :state-get-buffer #(identity @state/buffer))
@@ -29,14 +32,17 @@
   (dispatch/add-producer :state-get-text-from state/get-text-from))
 
 (defn- gui-config []
-  (dispatch/add-reactor :key-event gui/key-event)
-  (dispatch/add-reactor :set-frame gui/set-frame))
+  (reactor :key-event gui/key-event)
+  (reactor :set-frame gui/set-frame))
 
 (defn- file-config []
-  (dispatch/add-reactor :file-load-buffer file/load-buffer))
+  (reactor :file-load-buffer file/load-buffer))
 
 (defn- event-config []
   (dispatch/add-producer :key-listener #(identity event/keylistener)))
+
+(defn- repl-config []
+  (reactor :key-event gui/key-event))
 
 ;;; would really be nice if each namespace defined a config function and then
 ;;; that function was invoked for each namespace loaded?
@@ -46,4 +52,5 @@
   (state-config)
   (gui-config)
   (file-config)
-  (event-config))
+  (event-config)
+  (repl-config))
