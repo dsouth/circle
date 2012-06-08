@@ -30,7 +30,7 @@
 
 (defn key-pressed [event]
   (let [modifier (.getModifiers event)]
-    (dispatch/fire :key-event {:key (.getKeyChar) :modifier modifier})
+    (dispatch/fire :key-event {:key (.getKeyChar event) :modifier modifier})
     (when (modifier-map modifier)
       (let [m @(modifier-map modifier)]
       (if m
