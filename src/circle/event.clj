@@ -5,8 +5,7 @@
 (defn- event-map [e]
   {:key (.getKeyChar e)
    :code (.getKeyCode e)
-   :modifier (.getModifiers e)
-   :event e})
+   :modifier (.getModifiers e)})
 
 (defn key-pressed [event]
   (dispatch/fire :key-event (event-map event)))

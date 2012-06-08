@@ -12,4 +12,9 @@ for the String form or nil if the form is not valid."
     (read (PushbackReader. (StringReader. form)))
     (catch RuntimeException _ nil)))
 
-(event/add-to-meta-map KeyEvent/VK_E :eval)
+(defn display-string [s]
+  (doseq [c s]
+    (dispatch/fire :key-event {:modifier 0 :code 0 :key c})))
+
+(defn- output-ns []
+  )

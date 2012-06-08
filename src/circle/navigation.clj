@@ -56,7 +56,7 @@
              KeyEvent/VK_UP    up
              KeyEvent/VK_DOWN  down})
 
-(defn key-event [{code :code modifier :modifier event :event}]
+(defn key-event [{code :code modifier :modifier}]
   (let [f (key-fn code)]
     (when f
       (cursor-move f)
