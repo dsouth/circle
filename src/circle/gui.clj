@@ -24,5 +24,4 @@
 (defn key-event [{code :code modifier :modifier event :event}]
   (when (and (= code KeyEvent/VK_L)
              (= modifier KeyEvent/META_MASK))
-    (load-source-file)
-    (.consume event)))
+    (load-source-file)))
