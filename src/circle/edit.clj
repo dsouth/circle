@@ -21,14 +21,15 @@
         (apply conj altered-head tail))
       altered-head)))
 
-(defn delete []
+(defn delete [{event :event}]
   (let [line-number (dispatch/receive :state-get-cursor-line)]
     (if (= 0 (dispatch/receive :state-get-cursor-x))
       (when (> (count (dispatch/receive :state-get-buffer)) 1)
         (dispatch/fire :state-delete-line delete-line))
       (dispatch/fire :state-delete-char-before-cursor
                      (delete-char-at ((dispatch/receive :state-get-buffer) (dispatch/receive :state-get-cursor-line))
-                                     (dispatch/receive :state-get-cursor-x))))))
+                                     (dispatch/receive :state-get-cursor-x)))))
+  (.consume event))
 
 (defn add-newline [v x]
   (if (= x (count v))
@@ -71,20 +72,24 @@
 (defn character? [c]
   (Character/isDefined c))
 
-(defn add-char [c]
+(defn add-char [{c :key event :event}]
   (cond
    (newline? c) (dispatch/fire :state-modify-buffer add-newline-at-cursor)
    (character? c) (let [buffer (dispatch/receive :state-get-buffer)
                         line-num (dispatch/receive :state-get-cursor-line)
                         x (dispatch/receive :state-get-cursor-x)
                         new-line (add-char-to-line-at (buffer line-num) x c)]
-                    (dispatch/fire :state-modify-buffer-line new-line))))
+                    (dispatch/fire :state-modify-buffer-line new-line)))
+  (.consume event))
 
-(defn key-event [{key :key code :code modifier :modifier event :event}]
+(defn- backspace? [{code :code}]
+  (= code KeyEvent/VK_BACK_SPACE))
+
+(defn- event-char? [{key :key modifier :modifier}]
+  (and key
+       (< modifier 2)))
+
+(defn key-event [event]
   (cond
-   (= code KeyEvent/VK_BACK_SPACE) (do
-                                     (delete)
-                                     (.consume event))
-   (and key (< modifier 2)) (do
-                              (add-char key)
-                              (.consume event))))
+   (backspace? event) (delete event)
+   (event-char? event) (add-char event)))

@@ -11,7 +11,7 @@
   (dispatch/add-reactor :key-event navigation/key-event))
 
 (defn- edit-config []
-  (dispatch/add-reactor :key-event     edit/key-event))
+  (dispatch/add-reactor :key-event edit/key-event))
 
 (defn- state-config []
   (dispatch/add-reactor :state-load-buffer state/load-buffer)
@@ -29,7 +29,6 @@
 
 (defn- gui-config []
   (dispatch/add-reactor :key-event gui/key-event)
-  (dispatch/add-reactor :gui-load-file gui/load-source-file)
   (dispatch/add-reactor :set-frame gui/set-frame))
 
 (defn- file-config []
