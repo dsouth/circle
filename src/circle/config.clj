@@ -41,9 +41,6 @@
 (defn- event-config []
   (dispatch/add-producer :key-listener #(identity event/keylistener)))
 
-(defn- repl-config []
-  (reactor :key-event gui/key-event))
-
 ;;; would really be nice if each namespace defined a config function and then
 ;;; that function was invoked for each namespace loaded?
 (defn config []
@@ -52,5 +49,4 @@
   (state-config)
   (gui-config)
   (file-config)
-  (event-config)
-  (repl-config))
+  (event-config))
