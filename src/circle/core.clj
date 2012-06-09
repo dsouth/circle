@@ -76,7 +76,6 @@ returns the baseline for drawing the line"
   (let [jsp (JScrollPane. editor)]
     (.add frame jsp)
     (.setPreferredSize jsp (Dimension. 800 600)))
-  (comment (.add frame editor))
   (.pack frame)
   (.requestFocus editor) ;; perhaps on an expose listener? Or a focus manager???
   (.setVisible frame true))
