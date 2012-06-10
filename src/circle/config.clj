@@ -33,7 +33,7 @@
 
 (defn- gui-config []
   (reactor :key-event gui/key-event)
-  (reactor :set-frame gui/set-frame))
+  (reactor :show-frame gui/show))
 
 (defn- file-config []
   (reactor :file-load-buffer file/load-buffer))
