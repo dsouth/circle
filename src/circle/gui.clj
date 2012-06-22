@@ -3,7 +3,7 @@
   (:import (java.awt Color Dimension FileDialog Font RenderingHints)
            (java.awt.event KeyEvent)
            (java.io FilenameFilter)
-           (javax.swing JFrame JComponent JScrollPane SwingUtilities)))
+           (javax.swing JFrame JComponent SwingUtilities)))
 
 (defn set-frame [f]
   (def frame f))
@@ -95,9 +95,8 @@ returns the baseline for drawing the line"
   (.setFont editor (Font. "Menlo" Font/PLAIN 24))
   (.addKeyListener editor (dispatch/receive :key-listener))
   (.setDefaultCloseOperation frame JFrame/DISPOSE_ON_CLOSE)
-  (let [jsp (JScrollPane. editor)]
-    (.add frame jsp)
-    (.setPreferredSize jsp (Dimension. 800 600)))
+  (.add frame editor)
+  (.setPreferredSize editor (Dimension. 800 600))
   (.pack frame)
   (.requestFocus editor) ;; perhaps on an expose listener? Or a focus manager???
   (.setVisible frame true))
