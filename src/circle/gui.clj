@@ -38,9 +38,9 @@
 
 (declare editor)
 
-(defn update-screen-delta [y]
+(defn update-screen-delta [r]
   (let [d (.getSize editor)]
-    (println "---" d "---" y)))
+    (println "---" d "---" r)))
 
 (defn get-cursor-x
   "Returns the pixel x coordinate for the cursor. Assumes fixed width font.
@@ -49,9 +49,9 @@ Also responsible for keeping the cursor in the viewport for the scroll pane."
   (let [bounding-rect (get-bounding-rect font frc)
         y (* -1 (.getY bounding-rect))
         x (* (dispatch/receive :state-get-cursor-x) (.getWidth bounding-rect))]
-    (.translate bounding-rect x (+ y (* (dec (dispatch/receive :state-get-cursor-line))
+    (.translate bounding-rect x (+ y (* (dispatch/receive :state-get-cursor-line)
                                         (.getHeight bounding-rect))))
-    (update-screen-delta (int (.getY bounding-rect)))
+    (update-screen-delta bounding-rect)
     (int (.getX bounding-rect))))
 
 (defn baseline
