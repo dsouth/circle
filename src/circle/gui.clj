@@ -52,7 +52,6 @@ Also responsible for keeping the cursor in the viewport for the scroll pane."
         x (* (dispatch/receive :state-get-cursor-x) (.getWidth bounding-rect))]
     (.translate bounding-rect x (+ y (* (dec (dispatch/receive :state-get-cursor-line))
                                         (.getHeight bounding-rect))))
-    (.scrollRectToVisible editor bounding-rect)
     (int (.getX bounding-rect))))
 
 (defn baseline
