@@ -59,9 +59,9 @@ Also responsible for keeping the cursor in the viewport for the scroll pane."
   "Given the index, i, of a line of text, its height and descent
 returns the baseline for drawing the line"
   [i line-height descent]
-  (+ screen-delta (- (* (+ 1 i)
-                        line-height)
-                     descent)))
+  (- (* (+ 1 i)
+        line-height)
+     descent screen-delta))
 
 (defn set-preferred-size [font frc]
   (let [bounding-rect (get-bounding-rect font frc)
