@@ -38,11 +38,9 @@
     (.repaint editor)))
 
 (defn update-screen-delta [r]
-  (println r)
   (let [editor-height (.getHeight editor)
         y (.getY r)
         cursor-height (.getHeight r)]
-    (println "y" y "screen-delta" screen-delta "(+ y cursor-height)" (+ y cursor-height) "editor-height" editor-height "(> (+ y cursor-height) editor-height)" (> (+ y cursor-height) editor-height))
     (cond (< y screen-delta) (set-screen-delta (int y))
           (> (dec (+ y cursor-height)) (+ screen-delta editor-height)) (set-screen-delta (int (- y (- editor-height cursor-height)))))))
 
@@ -56,7 +54,6 @@ Also responsible for keeping the cursor in the viewport for the scroll pane."
     (.translate bounding-rect x (+ y (* (dispatch/receive :state-get-cursor-line)
                                         (.getHeight bounding-rect))))
     (update-screen-delta bounding-rect)
-    (println "screen-delta" screen-delta)
     (int (.getX bounding-rect))))
 
 (defn baseline
@@ -81,8 +78,6 @@ returns the baseline for drawing the line"
         font (.getFont g)
         bounds (get-bounding-rect font frc)
         line-height (int (Math/ceil (.getHeight bounds)))]
-    (println "line-height" line-height)
-    (println "bounds" bounds)
     (let [n (dispatch/receive :state-get-line-count)
           font-metrics (.getFontMetrics g)
           descent (.getDescent font-metrics)]
