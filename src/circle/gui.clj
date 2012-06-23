@@ -83,11 +83,6 @@ returns the baseline for drawing the line"
 (defn editor-paint
   "Paint the contents of the editor given the Grapics g"
   [g]
-  (.setColor g Color/RED)
-  (let [d (.getSize editor)]
-    (.drawRect g 0 0 (dec (.getWidth d)) (dec (.getHeight d)))
-    (.drawRect g 1 1 (- (.getWidth d) 3) (- (.getHeight d) 3)))
-  (.setColor g Color/BLACK)
   (let [frc (.getFontRenderContext g)
         font (.getFont g)
         bounds (get-bounding-rect font frc)
