@@ -38,9 +38,19 @@
 
 (declare editor)
 
+(defn set-screen-delta [y]
+  (when-not (= y screen-delta)
+    (def screen-delta y)
+    (.repaint editor)))
+
 (defn update-screen-delta [r]
-  (let [d (.getSize editor)]
-    (println "---" d "---" r)))
+  (println r)
+  (let [editor-height (.getHeight editor)
+        y (.getY r)
+        cursor-height (.getHeight r)]
+    (println "y" y "screen-delta" screen-delta "(+ y cursor-height)" (+ y cursor-height) "editor-height" editor-height "(> (+ y cursor-height) editor-height)" (> (+ y cursor-height) editor-height))
+    (cond (< y screen-delta) (set-screen-delta (int y))
+          (> (dec (+ y cursor-height)) editor-height) (set-screen-delta (int (- y (- editor-height cursor-height)))))))
 
 (defn get-cursor-x
   "Returns the pixel x coordinate for the cursor. Assumes fixed width font.
@@ -52,6 +62,7 @@ Also responsible for keeping the cursor in the viewport for the scroll pane."
     (.translate bounding-rect x (+ y (* (dispatch/receive :state-get-cursor-line)
                                         (.getHeight bounding-rect))))
     (update-screen-delta bounding-rect)
+    (println "screen-delta" screen-delta)
     (int (.getX bounding-rect))))
 
 (defn baseline
@@ -72,18 +83,25 @@ returns the baseline for drawing the line"
 (defn editor-paint
   "Paint the contents of the editor given the Grapics g"
   [g]
-  (let [font-metrics (.getFontMetrics g)
-        frc (.getFontRenderContext g)
-        s (dispatch/receive :state-get-line 0)
+  (.setColor g Color/RED)
+  (let [d (.getSize editor)]
+    (.drawRect g 0 0 (dec (.getWidth d)) (dec (.getHeight d)))
+    (.drawRect g 1 1 (- (.getWidth d) 3) (- (.getHeight d) 3)))
+  (.setColor g Color/BLACK)
+  (let [frc (.getFontRenderContext g)
         font (.getFont g)
-        bounds (.getStringBounds font s frc)
+        bounds (get-bounding-rect font frc)
         line-height (int (Math/ceil (.getHeight bounds)))]
+    (println "line-height" line-height)
+    (println "bounds" bounds)
     (let [n (dispatch/receive :state-get-line-count)
+          font-metrics (.getFontMetrics g)
           descent (.getDescent font-metrics)]
       (dotimes [i n]
-        (.drawString g (dispatch/receive :state-get-line i) 0 (baseline i line-height descent))))
+        (let [b (baseline i line-height descent)]
+          (.drawString g (dispatch/receive :state-get-line i) 0 b))))
     (let [i (dispatch/receive :state-get-cursor-line)
-          top (* i line-height)
+          top (- (* i line-height) screen-delta)
           bottom (+ top line-height)
           cursor-x (get-cursor-x font frc (dispatch/receive :state-get-line i))]
       (.drawLine g cursor-x top cursor-x bottom))
