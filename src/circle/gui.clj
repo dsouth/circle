@@ -2,20 +2,14 @@
   (:require [circle.dispatch :as dispatch])
   (:import (java.awt Color Dimension FileDialog Font RenderingHints)
            (java.awt.event KeyEvent)
-           (java.io FilenameFilter)
            (javax.swing JFrame JComponent SwingUtilities)))
 
 (def screen-delta 0)
 (defn set-frame [f]
   (def frame f))
 
-(def file-filter (proxy [FilenameFilter] []
-              (accept [_ f]
-                (.endsWith f ".clj"))))
-
 (defn load-source-file []
     (let [jfc (FileDialog. frame "Load..." FileDialog/LOAD)]
-    (.setFilenameFilter jfc file-filter)
     (.setVisible jfc true)
     (let [result (.getFile jfc)
           file-dir (.getDirectory jfc)
