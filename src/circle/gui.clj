@@ -50,7 +50,7 @@
         cursor-height (.getHeight r)]
     (println "y" y "screen-delta" screen-delta "(+ y cursor-height)" (+ y cursor-height) "editor-height" editor-height "(> (+ y cursor-height) editor-height)" (> (+ y cursor-height) editor-height))
     (cond (< y screen-delta) (set-screen-delta (int y))
-          (> (dec (+ y cursor-height)) editor-height) (set-screen-delta (int (- y (- editor-height cursor-height)))))))
+          (> (dec (+ y cursor-height)) (+ screen-delta editor-height)) (set-screen-delta (int (- y (- editor-height cursor-height)))))))
 
 (defn get-cursor-x
   "Returns the pixel x coordinate for the cursor. Assumes fixed width font.
