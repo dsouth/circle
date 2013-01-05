@@ -64,16 +64,3 @@
   (dosync
    (ref-set cursor-line line-num)
    (ref-set cursor-x x)))
-
-(defn get-text-from
-  "Gets a string that represents the text from x and line to the current
-cursor position in the buffer."
-  [{x :x line :line}]
-  (->> (if (= l line)
-         (subvec b x)
-         b)
-       (let [b (@buffer l)])
-       (for [l (range line (inc @cursor-line))])
-       (interpose \newline)
-       (flatten)
-       (apply str)))

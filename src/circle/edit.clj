@@ -1,5 +1,4 @@
 (ns circle.edit
-  (:import (java.awt.event KeyEvent))
   (:require [circle.dispatch :as dispatch]))
 
 (defn delete-char-at [v i]
@@ -21,7 +20,7 @@
         (apply conj altered-head tail))
       altered-head)))
 
-(defn delete []
+(defn delete [_]
   (let [line-number (dispatch/receive :state-get-cursor-line)]
     (if (= 0 (dispatch/receive :state-get-cursor-x))
       (when (> (count (dispatch/receive :state-get-buffer)) 1)
@@ -71,7 +70,7 @@
 (defn character? [c]
   (Character/isDefined c))
 
-(defn add-char [{c :key}]
+(defn add-char [c]
   (cond
    (newline? c) (dispatch/fire :state-modify-buffer add-newline-at-cursor)
    (character? c) (let [buffer (dispatch/receive :state-get-buffer)
@@ -79,15 +78,3 @@
                         x (dispatch/receive :state-get-cursor-x)
                         new-line (add-char-to-line-at (buffer line-num) x c)]
                     (dispatch/fire :state-modify-buffer-line new-line))))
-
-(defn- backspace? [{code :code}]
-  (= code KeyEvent/VK_BACK_SPACE))
-
-(defn- event-char? [{key :key modifier :modifier}]
-  (and key
-       (< modifier 2)))
-
-(defn key-event [event]
-  (cond
-   (backspace? event) (delete)
-   (event-char? event) (add-char event)))
