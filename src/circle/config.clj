@@ -5,6 +5,7 @@
             [circle.file :as file]
             [circle.gui :as gui]
             [circle.navigation :as navigation]
+            [circle.repl :as repl]
             [circle.state :as state]))
 
 (defn- navigation-config []
@@ -49,6 +50,9 @@
 (defn- event-config []
   (dispatch/add-producer :key-listener #(identity event/keylistener)))
 
+(defn- repl-config []
+  (dispatch/add-reactor :key-event repl/key-event))
+
 ;;; would really be nice if each namespace defined a config function and then
 ;;; that function was invoked for each namespace loaded?
 (defn config []
@@ -57,4 +61,5 @@
   (state-config)
   (gui-config)
   (file-config)
-  (event-config))
+  (event-config)
+  (repl-config))
