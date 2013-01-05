@@ -43,7 +43,7 @@ a value for the event. Only one function per event, i.e. 1 to 1."
     (if s
       (doseq [f s]
         (f d))
-      (println "WARNING: no reactor for" e "!!"))))
+      (println "---- WARNING: no reactor for" e "!!"))))
 
 (defn receive
   "Given an event e, will return the value of the function that e is mapped via add-askor."
@@ -55,4 +55,4 @@ a value for the event. Only one function per event, i.e. 1 to 1."
          (if d
            (f d)
            (f))
-         (println "WARNING: no receiver for" e "!!")))))
+         (println "---- WARNING: no receiver for" e "!!")))))
