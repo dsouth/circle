@@ -15,7 +15,7 @@ function for one event, i.e. events to functions is 1 to many."
      (alter reactors assoc e #{f}))))
 
 (defn add-producer
-  "Given an event e, adss the function f as a function that will return
+  "Given an event e, adds the function f as a function that will return
 a value for the event. Only one function per event, i.e. 1 to 1."
   [e f]
   (dosync
