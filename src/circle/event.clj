@@ -26,25 +26,28 @@
   (add-to-map meta-map k e))
 
 ; meta map for modification key to Java Swing to application event map
-(def modifier-map {0 key-map, KeyEvent/META_MASK meta-map})
+(def modifier-map {0 key-map,
+                   KeyEvent/META_MASK meta-map})
 
 (defn key-pressed [event]
   (let [modifier (.getModifiers event)]
-    (dispatch/fire :key-event {:key (.getKeyChar event) :modifier modifier})
-    (when (modifier-map modifier)
+    ;;(dispatch/fire :key-event {:key (.getKeyChar event) :modifier modifier})
+    (if (modifier-map modifier)
       (let [m @(modifier-map modifier)]
-      (if m
-        (let [f (m (.getKeyCode event))]
-          (if f
-            (do
-              (dispatch/fire f nil)
-              (.consume event))
-                                        ; Normal key presses don't have a function. Maybe they should??? :|
-            (when (= m @key-map)
-              (dispatch/fire :key-typed (.getKeyChar event))
-              (.consume event))))
-        (when (= KeyEvent/SHIFT_MASK)
-          (dispatch/fire :key-typed (.getKeyChar event))))))))
+        (println "m is" m)
+        (if m
+          (let [f (m (.getKeyCode event))]
+            (println "f is" f)
+            (if f
+              (do
+                (dispatch/fire f nil)
+                (.consume event))
+              ;; Normal key presses don't have a function. Maybe they should??? :|
+              (when (= m @key-map)
+                (dispatch/fire :key-typed (.getKeyChar event))
+                (.consume event))))))
+      (when (= KeyEvent/SHIFT_MASK)
+        (dispatch/fire :key-typed (.getKeyChar event))))))
 
 ; Java interop stuff...
 (defn key-released [event])
