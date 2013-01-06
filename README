@@ -1,6 +1,6 @@
 ## License
 
-Copyright (C) 2012 Douglas South
+Copyright (C) 2013 Douglas South
 
 TODO:
 
@@ -8,8 +8,10 @@ Selection (cut, copy, paste, deletion...)
 
 Formatting and highlighting (possibly pretty-lispy stuff too?)
 
-> 1 buffer support
+> 1 buffer support / REPL and buffer at same time...
 
 blinking cursor, better cursor
 
-out displaying in REPL
+REPL in-ns working after more than one evaluation
+
+REPL handling errors?!?
