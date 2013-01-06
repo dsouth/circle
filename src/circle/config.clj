@@ -38,7 +38,8 @@
   (dispatch/add-producer :state-get-buffer #(identity @state/buffer))
   (dispatch/add-producer :state-get-line-count state/line-count)
   (dispatch/add-producer :state-get-longest-line-count state/longest-line-count)
-  (dispatch/add-producer :state-get-line state/get-line))
+  (dispatch/add-producer :state-get-line state/get-line)
+  (dispatch/add-producer :state-get-text-from state/get-text-from))
 
 (defn- gui-config []
   (dispatch/add-reactor :gui-load-file gui/load-source-file)
