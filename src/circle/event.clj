@@ -31,7 +31,6 @@
 
 (defn key-pressed [event]
   (let [modifier (.getModifiers event)]
-    (dispatch/fire :key-event {:key (.getKeyChar event) :modifier modifier})
     (if (modifier-map modifier)
       (let [m @(modifier-map modifier)]
         (println "m is" m)
@@ -47,7 +46,8 @@
                 (dispatch/fire :key-typed (.getKeyChar event))
                 (.consume event))))))
       (when (= KeyEvent/SHIFT_MASK)
-        (dispatch/fire :key-typed (.getKeyChar event))))))
+        (dispatch/fire :key-typed (.getKeyChar event))))
+    (dispatch/fire :key-event {:key (.getKeyChar event) :modifier modifier})))
 
 ; Java interop stuff...
 (defn key-released [event])
