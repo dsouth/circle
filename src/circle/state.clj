@@ -6,6 +6,11 @@
 ;; buffer is a vector of line vectors
 (def buffer (ref [[]]))
 
+(defn add-watcher [f]
+  (add-watch buffer :buffer f)
+  (add-watch cursor-x :cursor-x f)
+  (add-watch cursor-line :cursor-line f))
+
 ;; state getters
 (defn longest-line-count
   "Return the count of the longest line in the buffer"
@@ -24,8 +29,7 @@
 (defn load-buffer [b]
   (dosync (ref-set buffer b)
           (ref-set cursor-line 0)
-          (ref-set cursor-x 0))
-  (dispatch/fire :repaint nil))
+          (ref-set cursor-x 0)))
 
 ;; buffer modification via user interactions
 (defn modify-buffer [f]
@@ -33,31 +37,27 @@
   (dosync
    (alter buffer f @cursor-line @cursor-x)
    (alter cursor-line inc)
-   (ref-set cursor-x 0))
-  (dispatch/fire :repaint nil))
+   (ref-set cursor-x 0)))
 
 (defn modify-buffer-line [new-line-text]
   (let [line-number @cursor-line]
     (dosync
      (alter buffer assoc line-number new-line-text)
-     (alter cursor-x #(inc %))))
-  (dispatch/fire :repaint nil))
+     (alter cursor-x #(inc %)))))
 
 (defn delete-char-before-cursor [altered]
   (let [line-number @cursor-line
         end (dec (count (@buffer @cursor-line)))]
     (dosync
      (alter buffer assoc line-number altered)
-     (alter cursor-x #(dec %))))
-  (dispatch/fire :repaint nil))
+     (alter cursor-x #(dec %)))))
 
 (defn delete-line [f]
   (let [new-x (count (@buffer (dec @cursor-line)))]
     (dosync
      (alter buffer f @cursor-line)
      (alter cursor-line dec)
-     (ref-set cursor-x new-x)))
-  (dispatch/fire :repaint nil))
+     (ref-set cursor-x new-x))))
 
 (defn move-cursor [[line-num x]]
   "Moves the cursor to line number line-num and horizontal position x."

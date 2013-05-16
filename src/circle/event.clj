@@ -11,6 +11,10 @@
 
 (def meta-map (ref {KeyEvent/VK_L :gui-load-file}))
 
+; meta map for modification key to Java Swing to application event map
+(def modifier-map {0 key-map,
+                   KeyEvent/META_MASK meta-map})
+
 (defn- add-to-map [m k e]
   (dosync
    (alter m assoc k e)))
@@ -24,10 +28,6 @@
   "Adds an event e to the meta-map with key k."
   [k e]
   (add-to-map meta-map k e))
-
-; meta map for modification key to Java Swing to application event map
-(def modifier-map {0 key-map,
-                   KeyEvent/META_MASK meta-map})
 
 (defn key-pressed [event]
   (let [modifier (.getModifiers event)]
@@ -47,7 +47,8 @@
                 (.consume event))))))
       (when (= KeyEvent/SHIFT_MASK)
         (dispatch/fire :key-typed (.getKeyChar event))))
-    (dispatch/fire :key-event {:key (.getKeyChar event) :modifier modifier})))
+;    (dispatch/fire :key-event {:key (.getKeyChar event) :modifier modifier})
+    ))
 
 ; Java interop stuff...
 (defn key-released [event])

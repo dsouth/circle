@@ -64,6 +64,9 @@ returns the baseline for drawing the line"
     (set-preferred-size font frc)
     (.revalidate editor)))
 
+(defn repaint-watcher [key ref old new]
+  (.repaint editor))
+
 (defn main []
   (config/config)
   (def editor (proxy [JComponent] []
@@ -81,10 +84,11 @@ returns the baseline for drawing the line"
   (comment (.add frame editor))
   (.pack frame)
   (.requestFocus editor) ;; perhaps on an expose listener? Or a focus manager???
-  (.setVisible frame true))
+  (.setVisible frame true)
+  (circle.state/add-watcher repaint-watcher))
 
 ; find a way to move this to config without cyclic dependency :(
-(dispatch/add-reactor :repaint (fn [_] (.repaint editor)))
+                                        ;(dispatch/add-reactor :repaint (fn [_] (.repaint editor)))
 
 (defn show []
   (SwingUtilities/invokeAndWait main))

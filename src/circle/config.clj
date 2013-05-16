@@ -9,18 +9,10 @@
             [circle.state :as state]))
 
 (defn- navigation-config []
-  (dispatch/add-reactor :key-right (fn [_]
-                                     (navigation/cursor-move navigation/forward)
-                                     (dispatch/fire :repaint nil)))
-  (dispatch/add-reactor :key-left  (fn [_]
-                                     (navigation/cursor-move navigation/backward)
-                                     (dispatch/fire :repaint nil)))
-  (dispatch/add-reactor :key-up    (fn [_]
-                                     (navigation/cursor-move navigation/up)
-                                     (dispatch/fire :repaint nil)))
-  (dispatch/add-reactor :key-down  (fn [_]
-                                     (navigation/cursor-move navigation/down)
-                                     (dispatch/fire :repaint nil))))
+  (dispatch/add-reactor :key-right (fn [_] (navigation/cursor-move navigation/forward)))
+  (dispatch/add-reactor :key-left  (fn [_] (navigation/cursor-move navigation/backward)))
+  (dispatch/add-reactor :key-up    (fn [_] (navigation/cursor-move navigation/up)))
+  (dispatch/add-reactor :key-down  (fn [_] (navigation/cursor-move navigation/down))))
 
 (defn- edit-config []
   (dispatch/add-reactor :key-backspace edit/delete)
@@ -51,8 +43,9 @@
 (defn- event-config []
   (dispatch/add-producer :key-listener #(identity event/keylistener)))
 
-(defn- repl-config []
-  (dispatch/add-reactor :key-event repl/key-event))
+;(defn- repl-config []
+;  (dispatch/add-reactor :key-event repl/key-event))
+
 
 ;;; would really be nice if each namespace defined a config function and then
 ;;; that function was invoked for each namespace loaded?
@@ -63,4 +56,5 @@
   (gui-config)
   (file-config)
   (event-config)
-  (repl-config))
+;  (repl-config)
+  )
